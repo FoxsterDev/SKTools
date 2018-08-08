@@ -1,3 +1,6 @@
 [submodule "ScriptingDefineManager"]
 	path = ScriptingDefineManager
 	url = ../SKTools.ScriptingDefineManager.git
+[submodule "EditorCoroutine"]
+	path = EditorCoroutine
+	url = ../SKTools.EditorCoroutine.git
