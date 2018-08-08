@@ -1,0 +1,3 @@
+[submodule "ScriptingDefineManager"]
+	path = ScriptingDefineManager
+	url = ../SKTools.ScriptingDefineManager.git
