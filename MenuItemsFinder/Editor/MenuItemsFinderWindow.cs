@@ -10,19 +10,20 @@ using Debug = UnityEngine.Debug;
 
 namespace SKTools.MenuItemsFinder
 {
+    //replace special hotkeys to readable symbols
+    //[Done] to separate searchbox
     //to plan: check validate method
     //to provide and check context for menu item
     //to add star prefs
     //[Done] add json prefs
     internal class MenuItemsFinderWindow : EditorWindow
     {
-        private GUIStyle _toolbarSearchFieldStyle, _toolbarSearchFieldCancelButtonStyle, _menuItemButton;
         private List<MenuItemLink> _menuItems;
         private List<MenuItemLink> _selection = new List<MenuItemLink>();
-        //private string _previousSearchString = string.Empty, _searchString = "Please type menuitem name here..";
         private Vector2 _scrollPosition;
         private string _prefsFilePath;
-
+        private  GUIStyle _menuItemButton, _unstarredMenuItemButton, _starredMenuItemButton;
+        
         private MenuItemsFinderPreferences prefs = new MenuItemsFinderPreferences
         {
             SearchString = "Please type menuitem name here.."
@@ -34,27 +35,28 @@ namespace SKTools.MenuItemsFinder
             var finderWindow = (MenuItemsFinderWindow) GetWindow(typeof(MenuItemsFinderWindow));
             finderWindow.Show();
         }
+
+        private void CreateStyles()
+        {
+            _menuItemButton = new GUIStyle(EditorStyles.miniButton);
+            _menuItemButton.fixedHeight = 20;
+            _menuItemButton.alignment = TextAnchor.MiddleLeft;
+            _menuItemButton.richText = true;
+            
+            _unstarredMenuItemButton = new GUIStyle(EditorStyles.miniButton);
+            _unstarredMenuItemButton.fixedHeight = 28;
+            _unstarredMenuItemButton.fixedWidth = 28;
+            _unstarredMenuItemButton.stretchHeight = false;
+            _unstarredMenuItemButton.stretchWidth = false;
+            _unstarredMenuItemButton.imagePosition = ImagePosition.ImageOnly;
+            _unstarredMenuItemButton.overflow = new RectOffset(0, 0, 6, -6);
+            _starredMenuItemButton = new GUIStyle(_unstarredMenuItemButton);
+        }
         
         private void Awake()
         {
-            LoadPrefs();
-            
-            var instance = (EditorStyles) typeof(EditorStyles)
-                .GetField("s_Current", BindingFlags.Static | BindingFlags.NonPublic).GetValue(null);
-            _toolbarSearchFieldStyle = (GUIStyle) typeof(EditorStyles)
-                .GetField("m_ToolbarSearchField", BindingFlags.Instance | BindingFlags.NonPublic).GetValue(instance); //
-            _toolbarSearchFieldStyle = new GUIStyle(_toolbarSearchFieldStyle);
-            _toolbarSearchFieldStyle.stretchWidth = true;
-            _toolbarSearchFieldStyle.stretchHeight = true;
-
-            _toolbarSearchFieldCancelButtonStyle = (GUIStyle) typeof(EditorStyles)
-                .GetField("m_ToolbarSearchFieldCancelButton", BindingFlags.Instance | BindingFlags.NonPublic)
-                .GetValue(instance); //
-            _toolbarSearchFieldCancelButtonStyle = new GUIStyle(_toolbarSearchFieldCancelButtonStyle);
-
-            _menuItemButton = new GUIStyle(EditorStyles.miniButton);
-            _menuItemButton.alignment = TextAnchor.MiddleLeft;
-            
+            CreateStyles();
+            Load();
             var watch = new Stopwatch();
             watch.Start();
             _menuItems = FindAllMenuItems();
@@ -64,22 +66,33 @@ namespace SKTools.MenuItemsFinder
             _menuItems.Sort((x, y) => y.Key[0] - x.Key[0]);
         }
 
-        private void SavePrefs()
+        private void Save()
         {
             try
             {
-                System.IO.File.WriteAllText(_prefsFilePath, EditorJsonUtility.ToJson(prefs));
+                File.WriteAllText(_prefsFilePath, EditorJsonUtility.ToJson(prefs));
             }
             catch{ }
         }
 
-        private void LoadPrefs()
+        private void Load()
         {
             try
             {
                 var stackTrace = new StackTrace(true);
-                _prefsFilePath = stackTrace.GetFrames()[0].GetFileName()
-                    .Replace(typeof(MenuItemsFinderWindow).Name + ".cs", "Prefs.json");
+                var editorDirectory = stackTrace.GetFrames()[0].GetFileName()
+                    .Replace(typeof(MenuItemsFinderWindow).Name + ".cs", string.Empty);
+                _prefsFilePath = editorDirectory + "Prefs.json";
+                var starFilePath = editorDirectory.Replace("Editor/", "Editor Resources/").Substring(Application.dataPath.Length-"Assets".Length);
+                _unstarredMenuItemButton.active.background = 
+                _unstarredMenuItemButton.focused.background =
+                _unstarredMenuItemButton.hover.background = 
+                _unstarredMenuItemButton.normal.background  = AssetDatabase.LoadAssetAtPath<Texture2D>(starFilePath+"unstarred.png");
+                
+                _starredMenuItemButton.active.background = 
+                    _starredMenuItemButton.focused.background =
+                        _starredMenuItemButton.hover.background = 
+                            _starredMenuItemButton.normal.background  = AssetDatabase.LoadAssetAtPath<Texture2D>(starFilePath+"starred.png");
 
                 if (File.Exists(_prefsFilePath))
                 {
@@ -95,32 +108,25 @@ namespace SKTools.MenuItemsFinder
        
         private void OnGUI()
         {
-            GUILayout.BeginHorizontal(EditorStyles.toolbar);
-
-            prefs.SearchString = GUILayout.TextField(prefs.SearchString, _toolbarSearchFieldStyle, GUILayout.MinWidth(200));
-            if (GUILayout.Button(string.Empty, _toolbarSearchFieldCancelButtonStyle))
-            {
-                prefs.SearchString = string.Empty;
-                GUI.FocusControl(null);
-            }
-
-            GUILayout.EndHorizontal();
-
+            prefs.SearchString = GUILayoutCollection.SearchTextField(prefs.SearchString, GUILayout.MinWidth(200));
+           
             if (!prefs.PreviousSearchString.Equals(prefs.SearchString))
             {
                 prefs.PreviousSearchString = prefs.SearchString;
                 _selection = _menuItems.FindAll(m => m.Key.Contains(prefs.PreviousSearchString.ToLower()));
-                SavePrefs();
+                Save();
             }
 
             if (_selection.Count > 0)
             {
                 _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
+                var y = 40f;
                 foreach (var item in _selection)
                 {
+                    GUILayout.BeginHorizontal();
+                    
                     GUI.color = item.MenuItem.validate ? Color.gray : Color.white;
-                    if (GUILayout.Button(item.MenuItem.menuItem + " validate=" + item.MenuItem.validate,
-                        _menuItemButton))
+                    if (GUILayout.Button(item.Label, _menuItemButton))
                     {
                         Debug.Log("Try execute menuItem="+ item);
                         try
@@ -132,8 +138,15 @@ namespace SKTools.MenuItemsFinder
                             Debug.LogError("cant execute this menu item: " + item +"\n"+ ex);
                         }
                     }
-
                     GUI.color = Color.white;
+                    if (GUILayout.Button("", item.Starred ? _starredMenuItemButton : _unstarredMenuItemButton))//, GUILayout.MaxWidth(32), GUILayout.MaxHeight(32)))
+                    {
+                        item.Starred = !item.Starred;
+                    }
+                    
+                    GUILayout.EndHorizontal();
+
+                    y += (_menuItemButton.fixedHeight + 2);
                 }
 
                 GUILayout.EndScrollView();
