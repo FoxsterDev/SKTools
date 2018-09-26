@@ -1,23 +1,21 @@
 ﻿using System.Linq;
 using System.Reflection;
 using UnityEditor;
+using UnityEngine;
 
 namespace SKTools.MenuItemsFinder
 {
-    internal class MenuItemLink
+    internal class MenuItemLink 
     {
         public readonly MethodInfo Method;
         public readonly MenuItem MenuItem;
-        public readonly string Key;
         public readonly string Label;
-
         public bool Starred;
 
         public MenuItemLink(MethodInfo method, MenuItem menuItem)
         {
             Method = method;
             MenuItem = menuItem;
-            Key = menuItem.menuItem.ToLower();
             //% (ctrl on Windows, cmd on macOS), # (shift), & (alt).
             Label = menuItem.menuItem;
             var index = Label.LastIndexOf(' ');
@@ -48,6 +46,19 @@ namespace SKTools.MenuItemsFinder
         public override string ToString()
         {
             return string.Format("MenuItem={0}; Method={1}", MenuItem.menuItem, Method.Name);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((MenuItemLink) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (MenuItem != null ? MenuItem.GetHashCode() : 0);
         }
     }
 }

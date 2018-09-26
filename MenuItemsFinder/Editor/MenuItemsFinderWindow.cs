@@ -10,7 +10,7 @@ using Debug = UnityEngine.Debug;
 
 namespace SKTools.MenuItemsFinder
 {
-    //replace special hotkeys to readable symbols
+    //[Done] replace special hotkeys to readable symbols
     //[Done] to separate searchbox
     //to plan: check validate method
     //to provide and check context for menu item
@@ -18,16 +18,9 @@ namespace SKTools.MenuItemsFinder
     //[Done] add json prefs
     internal class MenuItemsFinderWindow : EditorWindow
     {
-        private List<MenuItemLink> _menuItems;
-        private List<MenuItemLink> _selection = new List<MenuItemLink>();
-        private Vector2 _scrollPosition;
-        private string _prefsFilePath;
-        private  GUIStyle _menuItemButton, _unstarredMenuItemButton, _starredMenuItemButton;
-        
-        private MenuItemsFinderPreferences prefs = new MenuItemsFinderPreferences
-        {
-            SearchString = "Please type menuitem name here.."
-        };
+        private Vector2 _scrollPositionSelection, _scrollPositionStarred;
+        private GUIStyle _menuItemButtonStyle, _unstarredMenuItemButtonStyle, _starredMenuItemButtonStyle;
+        private MenuItemsFinder _finder;
 
         [MenuItem("SKTools/MenuItems Finder %#f")]
         private static void Init()
@@ -38,145 +31,117 @@ namespace SKTools.MenuItemsFinder
 
         private void CreateStyles()
         {
-            _menuItemButton = new GUIStyle(EditorStyles.miniButton);
-            _menuItemButton.fixedHeight = 20;
-            _menuItemButton.alignment = TextAnchor.MiddleLeft;
-            _menuItemButton.richText = true;
-            
-            _unstarredMenuItemButton = new GUIStyle(EditorStyles.miniButton);
-            _unstarredMenuItemButton.fixedHeight = 28;
-            _unstarredMenuItemButton.fixedWidth = 28;
-            _unstarredMenuItemButton.stretchHeight = false;
-            _unstarredMenuItemButton.stretchWidth = false;
-            _unstarredMenuItemButton.imagePosition = ImagePosition.ImageOnly;
-            _unstarredMenuItemButton.overflow = new RectOffset(0, 0, 6, -6);
-            _starredMenuItemButton = new GUIStyle(_unstarredMenuItemButton);
+            _menuItemButtonStyle = new GUIStyle(EditorStyles.miniButton);
+            _menuItemButtonStyle.fixedHeight = 20;
+            _menuItemButtonStyle.alignment = TextAnchor.MiddleLeft;
+            _menuItemButtonStyle.richText = true;
+
+            _unstarredMenuItemButtonStyle = new GUIStyle(EditorStyles.miniButton);
+            _unstarredMenuItemButtonStyle.fixedHeight = 28;
+            _unstarredMenuItemButtonStyle.fixedWidth = 28;
+            _unstarredMenuItemButtonStyle.stretchHeight = false;
+            _unstarredMenuItemButtonStyle.stretchWidth = false;
+            _unstarredMenuItemButtonStyle.imagePosition = ImagePosition.ImageOnly;
+            _unstarredMenuItemButtonStyle.overflow = new RectOffset(0, 0, 6, -6);
+            _unstarredMenuItemButtonStyle.active.background =
+                _unstarredMenuItemButtonStyle.focused.background =
+                    _unstarredMenuItemButtonStyle.hover.background =
+                        _unstarredMenuItemButtonStyle.normal.background = _finder.UnstarredImage;
+
+            _starredMenuItemButtonStyle = new GUIStyle(_unstarredMenuItemButtonStyle);
+
+            _starredMenuItemButtonStyle.active.background =
+                _starredMenuItemButtonStyle.focused.background =
+                    _starredMenuItemButtonStyle.hover.background =
+                        _starredMenuItemButtonStyle.normal.background = _finder.StarredImage;
         }
-        
+
         private void Awake()
         {
+            _finder = new MenuItemsFinder();
+            _finder.Load();
             CreateStyles();
-            Load();
-            var watch = new Stopwatch();
-            watch.Start();
-            _menuItems = FindAllMenuItems();
-            watch.Stop();
-            Debug.Log("Time to FindAllMenuItems takes="+ watch.ElapsedMilliseconds+"ms");//for mac book pro 2018 it takes about 170 ms, it is not critical affects every time to run it
-
-            _menuItems.Sort((x, y) => y.Key[0] - x.Key[0]);
         }
 
-        private void Save()
-        {
-            try
-            {
-                File.WriteAllText(_prefsFilePath, EditorJsonUtility.ToJson(prefs));
-            }
-            catch{ }
-        }
-
-        private void Load()
-        {
-            try
-            {
-                var stackTrace = new StackTrace(true);
-                var editorDirectory = stackTrace.GetFrames()[0].GetFileName()
-                    .Replace(typeof(MenuItemsFinderWindow).Name + ".cs", string.Empty);
-                _prefsFilePath = editorDirectory + "Prefs.json";
-                var starFilePath = editorDirectory.Replace("Editor/", "Editor Resources/").Substring(Application.dataPath.Length-"Assets".Length);
-                _unstarredMenuItemButton.active.background = 
-                _unstarredMenuItemButton.focused.background =
-                _unstarredMenuItemButton.hover.background = 
-                _unstarredMenuItemButton.normal.background  = AssetDatabase.LoadAssetAtPath<Texture2D>(starFilePath+"unstarred.png");
-                
-                _starredMenuItemButton.active.background = 
-                    _starredMenuItemButton.focused.background =
-                        _starredMenuItemButton.hover.background = 
-                            _starredMenuItemButton.normal.background  = AssetDatabase.LoadAssetAtPath<Texture2D>(starFilePath+"starred.png");
-
-                if (File.Exists(_prefsFilePath))
-                {
-                    EditorJsonUtility.FromJsonOverwrite(File.ReadAllText(_prefsFilePath), prefs);
-                }
-            }catch{}
-        }
-        
-        private void OnDestroy()
-        {
-           AssetDatabase.Refresh();    
-        }
-       
         private void OnGUI()
         {
-            prefs.SearchString = GUILayoutCollection.SearchTextField(prefs.SearchString, GUILayout.MinWidth(200));
-           
-            if (!prefs.PreviousSearchString.Equals(prefs.SearchString))
+            _finder.Prefs.SearchString = GUILayoutCollection.SearchTextField(_finder.Prefs.SearchString, GUILayout.MinWidth(200));
+
+            if (!_finder.Prefs.PreviousSearchString.Equals(_finder.Prefs.SearchString))
             {
-                prefs.PreviousSearchString = prefs.SearchString;
-                _selection = _menuItems.FindAll(m => m.Key.Contains(prefs.PreviousSearchString.ToLower()));
-                Save();
+                _finder.Prefs.PreviousSearchString = _finder.Prefs.SearchString;
+                _finder.SelectedItems =
+                    _finder.MenuItems.FindAll(m => m.Label.Contains(_finder.Prefs.PreviousSearchString.ToLower()));
             }
 
-            if (_selection.Count > 0)
+            if (_finder.Prefs.StarredMenuItems.Count > 0)
             {
-                _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
-                var y = 40f;
-                foreach (var item in _selection)
-                {
-                    GUILayout.BeginHorizontal();
-                    
-                    GUI.color = item.MenuItem.validate ? Color.gray : Color.white;
-                    if (GUILayout.Button(item.Label, _menuItemButton))
-                    {
-                        Debug.Log("Try execute menuItem="+ item);
-                        try
-                        {
-                            item.Execute();
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.LogError("cant execute this menu item: " + item +"\n"+ ex);
-                        }
-                    }
-                    GUI.color = Color.white;
-                    if (GUILayout.Button("", item.Starred ? _starredMenuItemButton : _unstarredMenuItemButton))//, GUILayout.MaxWidth(32), GUILayout.MaxHeight(32)))
-                    {
-                        item.Starred = !item.Starred;
-                    }
-                    
-                    GUILayout.EndHorizontal();
+                _scrollPositionStarred = GUILayout.BeginScrollView(_scrollPositionStarred, false, true);
 
-                    y += (_menuItemButton.fixedHeight + 2);
+                foreach (var item in _finder.MenuItems)
+                {
+                    if (!item.Starred)
+                        continue;
+                    Draw(item);
+                }
+
+                GUILayout.EndScrollView();
+            }
+
+            if (_finder.SelectedItems.Count > 0)
+            {
+                _scrollPositionSelection = GUILayout.BeginScrollView(_scrollPositionSelection, false, true);
+
+                foreach (var item in _finder.SelectedItems)
+                {
+                    if (item.Starred)
+                        continue;
+                    Draw(item);
                 }
 
                 GUILayout.EndScrollView();
             }
         }
         
-        private static List<MenuItemLink> FindAllMenuItems()
+        private void OnDestroy()
         {
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            _finder.SavePrefs();
+            AssetDatabase.Refresh();
+        }
 
-            var menuItems = new List<MenuItemLink>(200);
-            foreach (var assembly in assemblies)
+        private void Draw(MenuItemLink item)
+        {
+            GUILayout.BeginHorizontal();
+
+            GUI.color = item.MenuItem.validate ? Color.gray : Color.white;
+            if (GUILayout.Button(item.Label, _menuItemButtonStyle))
             {
-                var types = assembly.GetTypes();
-                foreach (var type in types)
+                Debug.Log("Try execute menuItem=" + item);
+                try
                 {
-                    var methods =
-                        type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic |
-                                        BindingFlags.Public); 
-
-                    foreach (var method in methods)
-                    {
-                        var items = method.GetCustomAttributes(typeof(MenuItem), false).Cast<MenuItem>().ToArray();
-                        if (items.Length != 1) continue;
-                        menuItems.Add(new MenuItemLink(method, items[0]));
-                    }
+                    item.Execute();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError("cant execute this menu item: " + item + "\n" + ex);
                 }
             }
 
-             return menuItems;
+            GUI.color = Color.white;
+            if (GUILayout.Button("", item.Starred ? _starredMenuItemButtonStyle : _unstarredMenuItemButtonStyle))
+            {
+                item.Starred = !item.Starred;
+                if (item.Starred && !_finder.Prefs.StarredMenuItems.Contains(item.MenuItem.menuItem))
+                {
+                    _finder.Prefs.StarredMenuItems.Add(item.MenuItem.menuItem);
+                }
+                else if (_finder.Prefs.StarredMenuItems.Contains(item.MenuItem.menuItem))
+                {
+                    _finder.Prefs.StarredMenuItems.Remove(item.MenuItem.menuItem);
+                }
+            }
+
+            GUILayout.EndHorizontal();
         }
     }
 }
