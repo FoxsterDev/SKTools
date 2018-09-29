@@ -23,7 +23,7 @@ namespace SKTools.MenuItemsFinder
         private GUIStyle _menuItemButtonStyle, _unstarredMenuItemButtonStyle, _starredMenuItemButtonStyle;
         private MenuItemsFinder _finder;
 
-        [MenuItem("SKTools/MenuItems Finder %#f")]
+        [MenuItem("SKTools/MenuItems Finder %#M")]
         private static void Init()
         {
             var finderWindow = (MenuItemsFinderWindow) GetWindow(typeof(MenuItemsFinderWindow));
