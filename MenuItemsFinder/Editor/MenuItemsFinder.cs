@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Assertions;
 using Debug = UnityEngine.Debug;
 
 namespace SKTools.MenuItemsFinder
@@ -40,7 +41,7 @@ namespace SKTools.MenuItemsFinder
                 var editorDirectory = stackTrace.GetFrames()[0].GetFileName()
                     .Replace(typeof(MenuItemsFinder).Name + ".cs", string.Empty);
                 _prefsFilePath = editorDirectory + "Prefs.json";
-                var starFilePath = editorDirectory.Replace("Editor/", "Editor Resources/")
+                var starFilePath = editorDirectory.Replace("Editor", "Editor Resources")
                     .Substring(Application.dataPath.Length - "Assets".Length);
                 UnstarredImage = AssetDatabase.LoadAssetAtPath<Texture2D>(starFilePath + "unstarred.png");
                 StarredImage = AssetDatabase.LoadAssetAtPath<Texture2D>(starFilePath + "starred.png");
@@ -62,9 +63,15 @@ namespace SKTools.MenuItemsFinder
                         }
                     });
                 }
+                
+                
+                Assert.IsNotNull(StarredImage, "Check path="+ starFilePath + "starred.png");
+                Assert.IsNotNull(UnstarredImage, "Check path="+ starFilePath + "unstarred.png");
+                
             }
-            catch
+            catch(Exception ex)
             {
+                Debug.LogError("Cant load prefs=" + ex.Message);
             }
         }
 

@@ -40,7 +40,7 @@ namespace SKTools.MenuItemsFinder
 
             _unstarredMenuItemButtonStyle = new GUIStyle(EditorStyles.miniButton);
             _unstarredMenuItemButtonStyle.fixedHeight = 28;
-            _unstarredMenuItemButtonStyle.fixedWidth = 28;
+            _unstarredMenuItemButtonStyle.fixedWidth = 32;
             _unstarredMenuItemButtonStyle.stretchHeight = false;
             _unstarredMenuItemButtonStyle.stretchWidth = false;
             _unstarredMenuItemButtonStyle.imagePosition = ImagePosition.ImageOnly;
@@ -72,8 +72,8 @@ namespace SKTools.MenuItemsFinder
             if (!_finder.Prefs.SearchString.Equals(_finder.Prefs.PreviousSearchString))
             {
                 _finder.Prefs.PreviousSearchString = _finder.Prefs.SearchString;
-                _finder.SelectedItems =
-                    _finder.MenuItems.FindAll(m => m.Label.Contains(_finder.Prefs.PreviousSearchString.ToLower()));
+                var key = _finder.Prefs.PreviousSearchString.ToLower();
+                _finder.SelectedItems = _finder.MenuItems.FindAll(m => m.Key.Contains(key) && !m.MenuItem.validate);
             }
             
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
@@ -84,7 +84,7 @@ namespace SKTools.MenuItemsFinder
                 {
                     if (!item.Starred)
                         continue;
-                    Draw(item);
+                    Draw(item, Color.green);
                 }
             }
 
@@ -94,7 +94,7 @@ namespace SKTools.MenuItemsFinder
                 {
                     if (item.Starred)
                         continue;
-                    Draw(item);
+                    Draw(item, Color.white);
                 }
             }
             
@@ -107,11 +107,11 @@ namespace SKTools.MenuItemsFinder
             AssetDatabase.Refresh();
         }
 
-        private void Draw(MenuItemLink item)
+        private void Draw(MenuItemLink item, Color color)
         {
             GUILayout.BeginHorizontal();
-
-            GUI.color = item.MenuItem.validate ? Color.gray : Color.white;
+            var previousColor = GUI.color;
+            GUI.color = color;
             if (GUILayout.Button(item.Label, _menuItemButtonStyle, GUILayout.MaxWidth(300)))
             {
                 Debug.Log("Try execute menuItem=" + item);
@@ -124,9 +124,10 @@ namespace SKTools.MenuItemsFinder
                     Debug.LogError("cant execute this menu item: " + item + "\n" + ex);
                 }
             }
-
-            GUI.color = Color.white;
-            if (GUILayout.Button("", item.Starred ? _starredMenuItemButtonStyle : _unstarredMenuItemButtonStyle))
+            
+            GUI.color = previousColor;
+            
+            if (GUILayout.Button(string.Empty, item.Starred ? _starredMenuItemButtonStyle : _unstarredMenuItemButtonStyle))
             {
                 item.Starred = !item.Starred;
                 if (item.Starred && !_finder.Prefs.StarredMenuItems.Contains(item.MenuItem.menuItem))

@@ -10,6 +10,8 @@ namespace SKTools.MenuItemsFinder
         public readonly MethodInfo Method;
         public readonly MenuItem MenuItem;
         public readonly string Label;
+        public readonly string Key;
+
         public bool Starred;
 
         public MenuItemLink(MethodInfo method, MenuItem menuItem)
@@ -36,6 +38,8 @@ namespace SKTools.MenuItemsFinder
                     Label = Label.Replace(k, s);
                 }
             }
+
+            Key = Label.ToLower();
         }
 
         public void Execute()
