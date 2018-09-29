@@ -96,7 +96,7 @@ namespace SKTools.MenuItemsFinder
 
             watch.Stop();
             Debug.Log("Time to FindAllMenuItems takes=" + watch.ElapsedMilliseconds +
-                      "ms"); //for mac book pro 2018 it takes about 170 ms, it is not critical affects every time to run it
+                      "ms Count="+menuItems.Count); //for mac book pro 2018 it takes about 170 ms, it is not critical affects every time to run it
 
             return menuItems;
         }

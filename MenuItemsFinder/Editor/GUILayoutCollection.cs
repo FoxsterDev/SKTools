@@ -10,6 +10,8 @@ namespace SKTools.MenuItemsFinder
        
         public static string SearchTextField(string text, params GUILayoutOption[] options)
         {
+            
+            
             if (_toolbarSearchFieldStyle == null || _toolbarSearchFieldCancelButtonStyle == null)
             {
                 var editorStyles = (EditorStyles) typeof(EditorStyles)
@@ -29,13 +31,19 @@ namespace SKTools.MenuItemsFinder
             
             GUILayout.BeginHorizontal(EditorStyles.toolbar);
 
+            GUI.SetNextControlName("SearchTextField");
             text = GUILayout.TextField(text, _toolbarSearchFieldStyle, options);
+            
             if (GUILayout.Button(string.Empty, _toolbarSearchFieldCancelButtonStyle))
             {
                 text = string.Empty;
-                GUI.FocusControl(null);
             }
 
+            if (GUI.GetNameOfFocusedControl() != "SearchTextField")
+            {
+                GUI.FocusControl("SearchTextField");
+            }
+            
             GUILayout.EndHorizontal();
             return text;
         }

@@ -10,6 +10,7 @@ using Debug = UnityEngine.Debug;
 
 namespace SKTools.MenuItemsFinder
 {
+    //windows doesn work starred + hotkeys ctrl + shift..
     //[Done] replace special hotkeys to readable symbols
     //[Done] to separate searchbox
     //to plan: check validate method
@@ -18,7 +19,7 @@ namespace SKTools.MenuItemsFinder
     //[Done] add json prefs
     internal class MenuItemsFinderWindow : EditorWindow
     {
-        private Vector2 _scrollPositionSelection, _scrollPositionStarred;
+        private Vector2 _scrollPosition;
         private GUIStyle _menuItemButtonStyle, _unstarredMenuItemButtonStyle, _starredMenuItemButtonStyle;
         private MenuItemsFinder _finder;
 
@@ -33,6 +34,7 @@ namespace SKTools.MenuItemsFinder
         {
             _menuItemButtonStyle = new GUIStyle(EditorStyles.miniButton);
             _menuItemButtonStyle.fixedHeight = 20;
+            //_menuItemButtonStyle.fixedWidth = 200;
             _menuItemButtonStyle.alignment = TextAnchor.MiddleLeft;
             _menuItemButtonStyle.richText = true;
 
@@ -67,40 +69,36 @@ namespace SKTools.MenuItemsFinder
         {
             _finder.Prefs.SearchString = GUILayoutCollection.SearchTextField(_finder.Prefs.SearchString, GUILayout.MinWidth(200));
 
-            if (!_finder.Prefs.PreviousSearchString.Equals(_finder.Prefs.SearchString))
+            if (!_finder.Prefs.SearchString.Equals(_finder.Prefs.PreviousSearchString))
             {
                 _finder.Prefs.PreviousSearchString = _finder.Prefs.SearchString;
                 _finder.SelectedItems =
                     _finder.MenuItems.FindAll(m => m.Label.Contains(_finder.Prefs.PreviousSearchString.ToLower()));
             }
+            
+            _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
 
             if (_finder.Prefs.StarredMenuItems.Count > 0)
             {
-                _scrollPositionStarred = GUILayout.BeginScrollView(_scrollPositionStarred, false, true);
-
                 foreach (var item in _finder.MenuItems)
                 {
                     if (!item.Starred)
                         continue;
                     Draw(item);
                 }
-
-                GUILayout.EndScrollView();
             }
 
             if (_finder.SelectedItems.Count > 0)
             {
-                _scrollPositionSelection = GUILayout.BeginScrollView(_scrollPositionSelection, false, true);
-
                 foreach (var item in _finder.SelectedItems)
                 {
                     if (item.Starred)
                         continue;
                     Draw(item);
                 }
-
-                GUILayout.EndScrollView();
             }
+            
+            GUILayout.EndScrollView();
         }
         
         private void OnDestroy()
@@ -114,7 +112,7 @@ namespace SKTools.MenuItemsFinder
             GUILayout.BeginHorizontal();
 
             GUI.color = item.MenuItem.validate ? Color.gray : Color.white;
-            if (GUILayout.Button(item.Label, _menuItemButtonStyle))
+            if (GUILayout.Button(item.Label, _menuItemButtonStyle, GUILayout.MaxWidth(300)))
             {
                 Debug.Log("Try execute menuItem=" + item);
                 try
