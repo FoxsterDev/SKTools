@@ -1,21 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using System.Diagnostics;
-using System.IO;
 using Debug = UnityEngine.Debug;
 
 namespace SKTools.MenuItemsFinder
 {
-    //windows doesn work starred + hotkeys ctrl + shift..
+    //[Done] windows doesn work starred + hotkeys ctrl + shift..
     //[Done] replace special hotkeys to readable symbols
     //[Done] to separate searchbox
     //to plan: check validate method
     //to provide and check context for menu item
-    //to add star prefs
+    //[Done] to add star prefs
     //[Done] add json prefs
     internal class MenuItemsFinderWindow : EditorWindow
     {
@@ -26,7 +21,7 @@ namespace SKTools.MenuItemsFinder
         [MenuItem("SKTools/MenuItems Finder %#M")]
         private static void Init()
         {
-            var finderWindow = (MenuItemsFinderWindow) GetWindow(typeof(MenuItemsFinderWindow));
+            var finderWindow = (MenuItemsFinderWindow) GetWindow(typeof(MenuItemsFinderWindow), false, typeof(MenuItemsFinderWindow).Name);
             finderWindow.Show();
         }
 
@@ -44,7 +39,7 @@ namespace SKTools.MenuItemsFinder
             _unstarredMenuItemButtonStyle.stretchHeight = false;
             _unstarredMenuItemButtonStyle.stretchWidth = false;
             _unstarredMenuItemButtonStyle.imagePosition = ImagePosition.ImageOnly;
-            _unstarredMenuItemButtonStyle.overflow = new RectOffset(0, 0, 6, -6);
+            _unstarredMenuItemButtonStyle.overflow = new RectOffset(0, 0, 3, -9);
             _unstarredMenuItemButtonStyle.active.background =
                 _unstarredMenuItemButtonStyle.focused.background =
                     _unstarredMenuItemButtonStyle.hover.background =

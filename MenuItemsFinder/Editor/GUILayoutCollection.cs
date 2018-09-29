@@ -10,8 +10,6 @@ namespace SKTools.MenuItemsFinder
        
         public static string SearchTextField(string text, params GUILayoutOption[] options)
         {
-            
-            
             if (_toolbarSearchFieldStyle == null || _toolbarSearchFieldCancelButtonStyle == null)
             {
                 var editorStyles = (EditorStyles) typeof(EditorStyles)
