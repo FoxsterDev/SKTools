@@ -7,19 +7,28 @@ namespace SKTools.MenuItemsFinder
 {
     internal class MenuItemLink 
     {
-        public readonly MethodInfo Method;
-        public readonly MenuItem MenuItem;
+        private readonly MenuItemData _menuItem;
         public readonly string Label;
-        public readonly string Key;
+        public readonly string SearchingKey;
 
         public bool Starred;
 
-        public MenuItemLink(MethodInfo method, MenuItem menuItem)
+        public string MenuItemPath
         {
-            Method = method;
-            MenuItem = menuItem;
+            get { return _menuItem.TargetAttribute.menuItem; }
+        }
+        
+        public bool HasValidate
+        {
+            get { return _menuItem.TargetMethodValidate != null; }
+        }
+        
+        public MenuItemLink(MenuItemData menuItem)
+        {
+            //Method = method;
+            _menuItem = menuItem;
             //% (ctrl on Windows, cmd on macOS), # (shift), & (alt).
-            Label = menuItem.menuItem;
+            Label = menuItem.TargetAttribute.menuItem;// .menuItem;
             var index = Label.LastIndexOf(' ');
             if (index > -1)
             {
@@ -39,17 +48,30 @@ namespace SKTools.MenuItemsFinder
                 }
             }
 
-            Key = Label.ToLower();
+            SearchingKey = Label.ToLower();
         }
 
+        public bool CanExecute()
+        {
+            if (HasValidate)
+            {
+                return (bool) _menuItem.TargetMethodValidate.Invoke(null, null);
+            }
+
+            return true;
+        }
+        
         public void Execute()
         {
-            Method.Invoke(null, null);
+            if (CanExecute())
+            {
+                _menuItem.TargetMethod.Invoke(null, null);
+            }
         }
 
         public override string ToString()
         {
-            return string.Format("MenuItem={0}; Method={1}", MenuItem.menuItem, Method.Name);
+            return string.Format("MenuItem={0}; Method={1}", Label, _menuItem.TargetMethod);
         }
 
         public override bool Equals(object obj)
@@ -62,7 +84,7 @@ namespace SKTools.MenuItemsFinder
 
         public override int GetHashCode()
         {
-            return (MenuItem != null ? MenuItem.GetHashCode() : 0);
+            return (_menuItem != null ? _menuItem.GetHashCode() : 0);
         }
     }
 }

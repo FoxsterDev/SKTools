@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
@@ -18,10 +19,11 @@ namespace SKTools.MenuItemsFinder
         private GUIStyle _menuItemButtonStyle, _unstarredMenuItemButtonStyle, _starredMenuItemButtonStyle;
         private MenuItemsFinder _finder;
 
-        [MenuItem("SKTools/MenuItems Finder %#M")]
+        [MenuItem("SKTools/MenuItems Finder %#m")]
         private static void Init()
         {
-            var finderWindow = (MenuItemsFinderWindow) GetWindow(typeof(MenuItemsFinderWindow), false, typeof(MenuItemsFinderWindow).Name);
+            var finderWindow = (MenuItemsFinderWindow) GetWindow(typeof(MenuItemsFinderWindow), false,
+                typeof(MenuItemsFinderWindow).Name);
             finderWindow.Show();
         }
 
@@ -34,16 +36,17 @@ namespace SKTools.MenuItemsFinder
             _menuItemButtonStyle.richText = true;
 
             _unstarredMenuItemButtonStyle = new GUIStyle(EditorStyles.miniButton);
-            _unstarredMenuItemButtonStyle.fixedHeight = 28;
+            _unstarredMenuItemButtonStyle.fixedHeight = 32;
             _unstarredMenuItemButtonStyle.fixedWidth = 32;
             _unstarredMenuItemButtonStyle.stretchHeight = false;
             _unstarredMenuItemButtonStyle.stretchWidth = false;
             _unstarredMenuItemButtonStyle.imagePosition = ImagePosition.ImageOnly;
-            _unstarredMenuItemButtonStyle.overflow = new RectOffset(0, 0, 3, -9);
+            _unstarredMenuItemButtonStyle.overflow = new RectOffset(0, 0, 6, -6);
             _unstarredMenuItemButtonStyle.active.background =
                 _unstarredMenuItemButtonStyle.focused.background =
                     _unstarredMenuItemButtonStyle.hover.background =
                         _unstarredMenuItemButtonStyle.normal.background = _finder.UnstarredImage;
+
 
             _starredMenuItemButtonStyle = new GUIStyle(_unstarredMenuItemButtonStyle);
 
@@ -62,15 +65,34 @@ namespace SKTools.MenuItemsFinder
 
         private void OnGUI()
         {
-            _finder.Prefs.SearchString = GUILayoutCollection.SearchTextField(_finder.Prefs.SearchString, GUILayout.MinWidth(200));
+            _finder.Prefs.SearchString =
+                GUILayoutCollection.SearchTextField(_finder.Prefs.SearchString, GUILayout.MinWidth(200));
 
             if (!_finder.Prefs.SearchString.Equals(_finder.Prefs.PreviousSearchString))
             {
                 _finder.Prefs.PreviousSearchString = _finder.Prefs.SearchString;
-                var key = _finder.Prefs.PreviousSearchString.ToLower();
-                _finder.SelectedItems = _finder.MenuItems.FindAll(m => m.Key.Contains(key) && !m.MenuItem.validate);
+                 var key = _finder.Prefs.PreviousSearchString.ToLower();
+                _finder.SelectedItems = _finder.MenuItems.FindAll(m => m.SearchingKey.Contains(key));// && !m.MenuItem.validate);
             }
-            
+
+            GUILayout.BeginHorizontal();
+
+            _finder.Prefs.OnlyWithValidate = GUILayout.Toggle(_finder.Prefs.OnlyWithValidate, "=OnlyWithValidate",
+                GUILayout.MinWidth(100));
+
+            if (GUILayout.Button("All Unstarred", GUILayout.MaxWidth(100)))
+            {
+                _finder.SelectedItems.ForEach(i =>
+                {
+                    if (i.Starred)
+                    {
+                        ToggleStarred(i);
+                    }
+                });
+            }
+
+            GUILayout.EndHorizontal();
+
             _scrollPosition = GUILayout.BeginScrollView(_scrollPosition, false, true);
 
             if (_finder.Prefs.StarredMenuItems.Count > 0)
@@ -79,6 +101,11 @@ namespace SKTools.MenuItemsFinder
                 {
                     if (!item.Starred)
                         continue;
+                    if (_finder.Prefs.OnlyWithValidate && !item.HasValidate)
+                    {
+                        continue;
+                    }
+
                     Draw(item, Color.green);
                 }
             }
@@ -89,13 +116,18 @@ namespace SKTools.MenuItemsFinder
                 {
                     if (item.Starred)
                         continue;
+                    if (_finder.Prefs.OnlyWithValidate && !item.HasValidate)
+                    {
+                        continue;
+                    }
+
                     Draw(item, Color.white);
                 }
             }
-            
+
             GUILayout.EndScrollView();
         }
-        
+
         private void OnDestroy()
         {
             _finder.SavePrefs();
@@ -119,23 +151,29 @@ namespace SKTools.MenuItemsFinder
                     Debug.LogError("cant execute this menu item: " + item + "\n" + ex);
                 }
             }
-            
+
             GUI.color = previousColor;
-            
-            if (GUILayout.Button(string.Empty, item.Starred ? _starredMenuItemButtonStyle : _unstarredMenuItemButtonStyle))
+
+            if (GUILayout.Button(string.Empty,
+                item.Starred ? _starredMenuItemButtonStyle : _unstarredMenuItemButtonStyle))
             {
-                item.Starred = !item.Starred;
-                if (item.Starred && !_finder.Prefs.StarredMenuItems.Contains(item.MenuItem.menuItem))
-                {
-                    _finder.Prefs.StarredMenuItems.Add(item.MenuItem.menuItem);
-                }
-                else if (_finder.Prefs.StarredMenuItems.Contains(item.MenuItem.menuItem))
-                {
-                    _finder.Prefs.StarredMenuItems.Remove(item.MenuItem.menuItem);
-                }
+                ToggleStarred(item);
             }
 
             GUILayout.EndHorizontal();
+        }
+
+        private void ToggleStarred(MenuItemLink item)
+        {
+            item.Starred = !item.Starred;
+            if (item.Starred && !_finder.Prefs.StarredMenuItems.Contains(item.MenuItemPath))
+            {
+                _finder.Prefs.StarredMenuItems.Add(item.MenuItemPath);
+            }
+            else if (_finder.Prefs.StarredMenuItems.Contains(item.MenuItemPath))
+            {
+                _finder.Prefs.StarredMenuItems.Remove(item.MenuItemPath);
+            }
         }
     }
 }

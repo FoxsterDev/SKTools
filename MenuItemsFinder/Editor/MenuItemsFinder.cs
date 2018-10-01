@@ -57,7 +57,7 @@ namespace SKTools.MenuItemsFinder
                 {
                     MenuItems.ForEach(i =>
                     {
-                        if (!i.MenuItem.validate && Prefs.StarredMenuItems.Contains(i.MenuItem.menuItem))
+                        if (Prefs.StarredMenuItems.Contains(i.MenuItemPath))
                         {
                             i.Starred = true;
                         }
@@ -80,6 +80,7 @@ namespace SKTools.MenuItemsFinder
             var watch = new Stopwatch();
             watch.Start();
 
+            var dict = new Dictionary<string, MenuItemData>();
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             var menuItems = new List<MenuItemLink>(200);
@@ -96,11 +97,35 @@ namespace SKTools.MenuItemsFinder
                     {
                         var items = method.GetCustomAttributes(typeof(MenuItem), false).Cast<MenuItem>().ToArray();
                         if (items.Length != 1) continue;
-                        menuItems.Add(new MenuItemLink(method, items[0]));
+                        var key = items[0].menuItem;
+                        
+                        MenuItemData data;
+                        dict.TryGetValue(key, out data);
+                        if (data == null)
+                        {
+                            data = new MenuItemData();
+                            dict.Add(key, data);
+                        }
+                        
+                        if (items[0].validate)
+                        {
+                            data.TargetAttributeValidate = items[0];
+                            data.TargetMethodValidate = method;
+                        }
+                        else
+                        {
+                            data.TargetAttribute = items[0];
+                            data.TargetMethod = method;
+                        }
                     }
                 }
             }
 
+            foreach (var entry in dict)
+            {
+                menuItems.Add(new MenuItemLink(entry.Value));
+            }
+            
             watch.Stop();
             Debug.Log("Time to FindAllMenuItems takes=" + watch.ElapsedMilliseconds +
                       "ms Count="+menuItems.Count); //for mac book pro 2018 it takes about 170 ms, it is not critical affects every time to run it
