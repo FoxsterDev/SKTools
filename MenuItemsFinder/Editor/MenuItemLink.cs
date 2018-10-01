@@ -25,7 +25,6 @@ namespace SKTools.MenuItemsFinder
         
         public MenuItemLink(MenuItemData menuItem)
         {
-            //Method = method;
             _menuItem = menuItem;
             //% (ctrl on Windows, cmd on macOS), # (shift), & (alt).
             Label = menuItem.TargetAttribute.menuItem;// .menuItem;

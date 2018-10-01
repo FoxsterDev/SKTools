@@ -71,7 +71,7 @@ namespace SKTools.MenuItemsFinder
             }
             catch(Exception ex)
             {
-                Debug.LogError("Cant load prefs=" + ex.Message);
+                Debug.LogError("Cant load prefs=" + ex);
             }
         }
 
@@ -96,7 +96,15 @@ namespace SKTools.MenuItemsFinder
                     foreach (var method in methods)
                     {
                         var items = method.GetCustomAttributes(typeof(MenuItem), false).Cast<MenuItem>().ToArray();
-                        if (items.Length != 1) continue;
+                        if (items.Length != 1)
+                        {
+                            if (items.Length > 1)
+                            {
+                                Debug.LogError("11111=" + items.Length);
+                            }
+
+                            continue;
+                        }
                         var key = items[0].menuItem;
                         
                         MenuItemData data;
@@ -123,6 +131,11 @@ namespace SKTools.MenuItemsFinder
 
             foreach (var entry in dict)
             {
+                if (entry.Value.TargetMethodValidate != null && entry.Value.TargetMethod == null)
+                {
+                    Debug.LogWarning("There is a validate method without execution method="+entry.Value.TargetMethodValidate.Name+" menupath="+ entry.Value.TargetAttributeValidate.menuItem);
+                    continue;
+                }
                 menuItems.Add(new MenuItemLink(entry.Value));
             }
             
