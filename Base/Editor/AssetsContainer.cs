@@ -12,18 +12,18 @@ namespace SKTools.Base.Editor
     {
         private Dictionary<string, Object> AssetsDict { get; set; }
         private string _assetsDirectory;
-        
+
         protected AssetsContainer(string assetsDirectory)
         {
             AssetsDict = new Dictionary<string, Object>();
             _assetsDirectory = assetsDirectory;
         }
-        
+
         public Object this[string nameAsset]
         {
             get { return Get<Object>(nameAsset); }
         }
-        
+
         public T Get<T>(string name) where T : Object
         {
             if (!AssetsDict.ContainsKey(name))
@@ -37,25 +37,25 @@ namespace SKTools.Base.Editor
 
         public void Load()
         {
-            
             try
             {
                 var files = Directory.GetFiles(_assetsDirectory, "*.*", SearchOption.AllDirectories);
-                
+
                 foreach (var filePath in files)
                 {
                     if (Path.GetExtension(filePath) == ".meta")
                         continue;
                     var assetPath = filePath.Substring(Application.dataPath.Length - "Assets".Length);
                     var asset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
+                    if (asset == null)
+                        continue;
                     AssetsDict[asset.name] = asset;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Debug.LogError(ex.Message);
             }
-
         }
     }
 }
