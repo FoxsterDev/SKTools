@@ -11,10 +11,12 @@ namespace SKTools.Base.Editor
     public class AssetsContainer : IAssetsContainer
     {
         private Dictionary<string, Object> AssetsDict { get; set; }
-
-        protected AssetsContainer()
+        private string _assetsDirectory;
+        
+        protected AssetsContainer(string assetsDirectory)
         {
             AssetsDict = new Dictionary<string, Object>();
+            _assetsDirectory = assetsDirectory;
         }
         
         public Object this[string nameAsset]
@@ -33,12 +35,12 @@ namespace SKTools.Base.Editor
             return (T) AssetsDict[name];
         }
 
-        public void Load(string absoluteDirectoryPath)
+        public void Load()
         {
             
             try
             {
-                var files = Directory.GetFiles(absoluteDirectoryPath, "*.*", SearchOption.AllDirectories);
+                var files = Directory.GetFiles(_assetsDirectory, "*.*", SearchOption.AllDirectories);
                 
                 foreach (var filePath in files)
                 {
