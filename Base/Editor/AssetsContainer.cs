@@ -40,12 +40,13 @@ namespace SKTools.Base.Editor
             try
             {
                 var files = Directory.GetFiles(_assetsDirectory, "*.*", SearchOption.AllDirectories);
-
+                var startIndex = Application.dataPath.Length - "Assets".Length;
+                
                 foreach (var filePath in files)
                 {
                     if (Path.GetExtension(filePath) == ".meta")
                         continue;
-                    var assetPath = filePath.Substring(Application.dataPath.Length - "Assets".Length);
+                    var assetPath = filePath.Substring(startIndex);
                     var asset = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
                     if (asset == null)
                         continue;
