@@ -42,6 +42,9 @@ namespace SKTools.Base.Editor
                 var files = Directory.GetFiles(_assetsDirectory, "*.*", SearchOption.AllDirectories);
                 var startIndex = Application.dataPath.Length - "Assets".Length;
                 
+#if FOXSTER_DEV_MODE
+           Debug.Log("[AssetsContainer] load from "+ _assetsDirectory);
+#endif
                 foreach (var filePath in files)
                 {
                     if (Path.GetExtension(filePath) == ".meta")

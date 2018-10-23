@@ -7,9 +7,9 @@ namespace SKTools.Base.Editor
 
     public abstract class CustomEditorWindow<T> : EditorWindow where T : EditorWindow, IGUIContainer
     {
-        public GUIDelegate<Rect> DrawGuiCallback { get; set; }
-        public GUIDelegate<Rect> LostFocusCallback { get; set; }
-        public GUIDelegate<Rect> CloseCallback { get; set; }
+        public GUIDelegate<IGUIContainer> DrawGuiCallback { get; set; }
+        public GUIDelegate<IGUIContainer> LostFocusCallback { get; set; }
+        public GUIDelegate<IGUIContainer> CloseCallback { get; set; }
         
         private static bool IsCreated
         {
@@ -22,7 +22,7 @@ namespace SKTools.Base.Editor
         /// <param name="createIfNotExist">In some cases I need to check of exisiting already opened window</param>
         /// <typeparam name="T">Some type of editor window</typeparam>
         /// <returns>Return a window of type T</returns>
-        public static T GetWindow(bool createIfNotExist = false)
+        public static IGUIContainer GetWindow(bool createIfNotExist = false)
         {
             if (!createIfNotExist && !IsCreated) return null;
 
@@ -43,11 +43,11 @@ namespace SKTools.Base.Editor
                 window = (T) objectsOfTypeAll[0];
             }
 
-            window.Configurate();
+            window.Init();
             return window;
         }
 
-        public virtual void Configurate()
+        public virtual void Init()
         {
             titleContent = GetTitleContent;
             if (GetMinSize.HasValue)
@@ -98,7 +98,7 @@ namespace SKTools.Base.Editor
         /// </summary>
         private void OnGUI()
         {
-            if (DrawGuiCallback != null) DrawGuiCallback(position);
+            if (DrawGuiCallback != null) DrawGuiCallback((IGUIContainer)this);
         }
 
         /// <summary>
@@ -117,14 +117,14 @@ namespace SKTools.Base.Editor
         /// </summary>
         private void OnLostFocus()
         {
-            if (LostFocusCallback != null) LostFocusCallback(position);
+            if (LostFocusCallback != null) LostFocusCallback((IGUIContainer)this);
         }
 
         private void OnDestroy()
         {
             IsCreated = false;
 
-            if (CloseCallback != null) CloseCallback(position);
+            if (CloseCallback != null) CloseCallback((IGUIContainer)this);
 
             DrawGuiCallback = null;
             LostFocusCallback = null;
