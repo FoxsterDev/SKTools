@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
@@ -35,6 +36,26 @@ namespace SKTools.Base.Editor
             filePath = @"file:\\" + filePath.Replace("/", @"\");;
 #endif
             Application.OpenURL(filePath);
+        }
+        
+        public static string GetPath(params string[] subName)
+        {
+            var path = GetDirectory(2);
+            foreach (var name in subName)
+            {
+                path = Path.Combine(path, name);
+            }
+            return path;
+        }
+        
+        /// <summary>
+        /// Get directory of place where was called this method, simple way to detect places scripts. To avoid hardcoded pathes
+        /// </summary>
+        /// <returns></returns>
+        public static string GetDirectory(int frameIndex = 1)
+        {
+            var stackTrace = new StackTrace(true);
+            return new FileInfo(stackTrace.GetFrames()[frameIndex].GetFileName()).DirectoryName;
         }
     }
 }

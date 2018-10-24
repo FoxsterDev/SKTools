@@ -18,10 +18,10 @@ namespace SKTools.Base.Editor
         }
 
         /// <summary>
-        /// I added this method because want to preconfigurate the window and detect common state with isCreated
-        /// <param name="createIfNotExist">In some cases I need to check of exisiting already opened window</param>
+        /// I added this method because want to preconfigurate the window and fast detect existing editor window common state with isCreated
+        /// <param name="createIfNotExist">In some cases I need to check of exisiting already an opened window</param>
         /// <typeparam name="T">Some type of editor window</typeparam>
-        /// <returns>Return a window of type T</returns>
+        /// <returns>Return a gui container of type T</returns>
         public static IGUIContainer GetWindow(bool createIfNotExist = false)
         {
             if (!createIfNotExist && !IsCreated) return null;
