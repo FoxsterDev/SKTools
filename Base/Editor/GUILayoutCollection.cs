@@ -47,7 +47,7 @@ namespace SKTools.Base.Editor
             return text;
         }
         
-        public static  void SupportFooterBar(string version, string releaseNotesUrl, string readmeUrl, string askQuestionUrlInSkype)
+        public static void SupportFooterBar(string version, string releaseNotesUrl, string readmeUrl, string askQuestionUrlInSkype)
         {
             GUILayout.Space (10);
 

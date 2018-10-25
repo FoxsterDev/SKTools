@@ -11,5 +11,6 @@ namespace SKTools.Base.Editor
         void Init();
         void Show();
         void Repaint();
+        void Close();
     }
 }
