@@ -38,7 +38,7 @@ namespace SKTools.Base.Editor
             Application.OpenURL(filePath);
         }
         
-        public static string GetPath(params string[] subName)
+        public static string GetThePathRelativeToCurrentFile(params string[] subName)
         {
             var path = GetDirectory(2);
             foreach (var name in subName)

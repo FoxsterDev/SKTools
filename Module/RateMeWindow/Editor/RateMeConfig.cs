@@ -44,7 +44,7 @@ namespace SKTools.Module.RateMeWindow
         {
             try
             {
-                var filePath = Utility.GetPath("Editor Resources", "RateMeConfig.json");
+                var filePath = Utility.GetThePathRelativeToCurrentFile("Editor Resources", "RateMeConfig.json");
                 if (File.Exists(filePath))
                 {
                     EditorJsonUtility.FromJsonOverwrite(File.ReadAllText(filePath), this);
@@ -62,7 +62,7 @@ namespace SKTools.Module.RateMeWindow
         {
             try
             {
-                var filePath = Utility.GetPath(relativeFolder, fileName);
+                var filePath = Utility.GetThePathRelativeToCurrentFile(relativeFolder, fileName);
                 File.WriteAllText(filePath, EditorJsonUtility.ToJson(this, true));
             }
             catch (Exception ex)

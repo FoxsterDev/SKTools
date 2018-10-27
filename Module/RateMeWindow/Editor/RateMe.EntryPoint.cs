@@ -59,7 +59,7 @@ namespace SKTools.Module.RateMeWindow
             _feedbackMessage = Config.FeedbackMessage;
             _starRects = new Rect[Config.MaxStar];
             
-            var assetsDirectory = Utility.GetPath("Editor Resources");
+            var assetsDirectory = Utility.GetThePathRelativeToCurrentFile("Editor Resources");
             var assets = new Assets(assetsDirectory);
 
             Utility.DiagnosticRun(assets.Load);
