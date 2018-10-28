@@ -30,6 +30,7 @@ namespace SKTools.Module.RateMeWindow
             {
                 rect.x += offsetX;
                 _starRects[i] = rect;
+                
                 if (GUI.Button(_starRects[i], string.Empty, _targetGui.Assets.StarStyles[i]))
                 {
                     _starsCount = i + 1;

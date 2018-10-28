@@ -2,6 +2,8 @@
 
 namespace SKTools.Base.Editor
 {
+    public delegate void GUIDelegate<T>(T obj);
+
     public interface IGUIContainer
     {
         Rect Position { get; }

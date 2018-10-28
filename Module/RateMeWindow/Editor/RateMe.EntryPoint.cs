@@ -6,23 +6,6 @@ namespace SKTools.Module.RateMeWindow
 {
     public partial class RateMe
     {
-        
-#if FOXSTER_DEV_MODE
-     
-        [MenuItem("SKTools/Rate Me Test")]
-        private static void ShowWindowMenuItem()
-        {
-            Show(null);
-        }
-      
-        [MenuItem("SKTools/Rate Me Save Default Config")]
-        private static void SaveConfigMenuItem()
-        {
-            new RateMeConfig().Save();
-        }
-        
-#endif
-        
         private Surrogate<IGUIContainer, Assets> _targetGui;
         private RateMeConfig _config;
         
@@ -75,5 +58,22 @@ namespace SKTools.Module.RateMeWindow
            
             SetCountStar(1);
         }
+                
+#if FOXSTER_DEV_MODE
+     
+        [MenuItem("SKTools/Rate Me Test")]
+        private static void ShowWindowMenuItem()
+        {
+            Show(null);
+        }
+      
+        [MenuItem("SKTools/Rate Me Save Default Config")]
+        private static void SaveConfigMenuItem()
+        {
+            new RateMeConfig().Save();
+        }
+        
+#endif
+
     }
 }

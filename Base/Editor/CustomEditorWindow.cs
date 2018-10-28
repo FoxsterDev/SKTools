@@ -3,8 +3,6 @@ using UnityEngine;
 
 namespace SKTools.Base.Editor
 {
-    public delegate void GUIDelegate<T>(T obj);
-
     public abstract class CustomEditorWindow<T> : EditorWindow where T : EditorWindow, IGUIContainer
     {
         public GUIDelegate<IGUIContainer> DrawGuiCallback { get; set; }
