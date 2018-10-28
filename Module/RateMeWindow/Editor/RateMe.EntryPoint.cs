@@ -46,7 +46,7 @@ namespace SKTools.Module.RateMeWindow
         }
         
         [InitializeOnLoadMethod]
-        private static void MenuItemsFinderWindow_CheckReload()
+        private static void RateMeWindow_CheckReload()
         {
             GetRateMe().SetUpWindow(false);
         }
@@ -59,7 +59,7 @@ namespace SKTools.Module.RateMeWindow
             _feedbackMessage = Config.FeedbackMessage;
             _starRects = new Rect[Config.MaxStar];
             
-            var assetsDirectory = Utility.GetThePathRelativeToCurrentFile("Editor Resources");
+            var assetsDirectory = Utility.GetPathRelativeToExecutableCurrentFile("Editor Resources");
             var assets = new Assets(assetsDirectory);
 
             Utility.DiagnosticRun(assets.Load);

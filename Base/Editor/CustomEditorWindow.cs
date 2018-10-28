@@ -13,10 +13,10 @@ namespace SKTools.Base.Editor
         
         private static bool IsCreated
         {
-            get { return EditorPrefs.GetBool(typeof(T).Name, false); }
-            set { EditorPrefs.SetBool(typeof(T).Name, value); }
+            get { return EditorPrefs.GetBool(typeof(T).FullName, false); }
+            set { EditorPrefs.SetBool(typeof(T).FullName, value); }
         }
-
+        
         /// <summary>
         /// I added this method because want to preconfigurate the window and fast detect existing editor window common state with isCreated
         /// <param name="createIfNotExist">In some cases I need to check of exisiting already an opened window</param>

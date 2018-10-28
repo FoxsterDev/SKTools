@@ -38,9 +38,9 @@ namespace SKTools.Base.Editor
             Application.OpenURL(filePath);
         }
         
-        public static string GetThePathRelativeToCurrentFile(params string[] subName)
+        public static string GetPathRelativeToExecutableCurrentFile(params string[] subName)
         {
-            var path = GetDirectory(2);
+            var path = GetDirectoryRelativeToExecutableCurrentFile(2);
             foreach (var name in subName)
             {
                 path = Path.Combine(path, name);
@@ -50,9 +50,10 @@ namespace SKTools.Base.Editor
         
         /// <summary>
         /// Get directory of place where was called this method, simple way to detect places scripts. To avoid hardcoded pathes
+        /// and search in the full project
         /// </summary>
         /// <returns></returns>
-        public static string GetDirectory(int frameIndex = 1)
+        public static string GetDirectoryRelativeToExecutableCurrentFile(int frameIndex = 1)
         {
             var stackTrace = new StackTrace(true);
             return new FileInfo(stackTrace.GetFrames()[frameIndex].GetFileName()).DirectoryName;
