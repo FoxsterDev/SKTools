@@ -7,6 +7,7 @@ namespace SKTools.Base.Editor
     {
         public GUIDelegate<IGUIContainer> DrawGuiCallback { get; set; }
         public GUIDelegate<IGUIContainer> LostFocusCallback { get; set; }
+        public GUIDelegate<IGUIContainer> FocusCallback { get; set; }
         public GUIDelegate<IGUIContainer> CloseCallback { get; set; }
         
         private static bool IsCreated
@@ -42,6 +43,7 @@ namespace SKTools.Base.Editor
             }
 
             window.Init();
+            
             return window;
         }
 
@@ -91,6 +93,11 @@ namespace SKTools.Base.Editor
             IsCreated = true;
         }
 
+        private void OnFocus()
+        {
+            if (FocusCallback != null) FocusCallback((IGUIContainer) this);
+        }
+        
         /// <summary>
         /// we can easily switch gui content of this window
         /// </summary>
