@@ -103,7 +103,7 @@ namespace SKTools.Base.Editor
             if (FocusCallback != null) FocusCallback((IGUIContainer) this);
             if (GetDefaultPosition.HasValue)
             {
-                position = GetDefaultPosition.Value;
+                //position = GetDefaultPosition.Value;
             }
         }
         
