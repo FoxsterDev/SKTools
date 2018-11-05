@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEditor;
+using UnityEngine;
 
 namespace SKTools.Base.Editor.GuiElementsSystem
 {
@@ -17,5 +18,9 @@ namespace SKTools.Base.Editor.GuiElementsSystem
 
         public static Func<string, Action, GuiLayoutButton> CreateLayoutButtonWithMiniLabelStyle =
             (name, act) => new GuiLayoutButton(name, EditorStyles.miniLabel, act);
+
+        public static Func<string, Action<bool>, Func<bool>, float, GuiLayoutToggle> CreateLayoutToggleWithFixedWidth =
+            (label, setvalue, getvalue, width) => new GuiLayoutToggle(label, setvalue, getvalue,
+                GUILayout.MaxWidth(width), GUILayout.MinWidth(width));
     }
 }

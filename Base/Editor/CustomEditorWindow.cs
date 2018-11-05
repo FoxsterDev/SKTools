@@ -72,7 +72,12 @@ namespace SKTools.Base.Editor
         {
             get { return null; }
         }
-
+        
+        protected virtual Rect? GetDefaultPosition
+        {
+            get { return null; }
+        }
+        
         protected virtual GUIContent GetTitleContent
         {
             get { return null; }
@@ -96,6 +101,10 @@ namespace SKTools.Base.Editor
         private void OnFocus()
         {
             if (FocusCallback != null) FocusCallback((IGUIContainer) this);
+            if (GetDefaultPosition.HasValue)
+            {
+                position = GetDefaultPosition.Value;
+            }
         }
         
         /// <summary>
