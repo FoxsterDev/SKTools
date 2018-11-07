@@ -7,7 +7,7 @@ namespace SKTools.Scripts
 {
     public static class AssetPathToCopy
     {
-        private const string MenuAssetPath = "Assets/Tools/";
+        private const string MenuAssetPath = "Assets/SKTools/";
         private const int Priority = 2000;
 
         [MenuItem(MenuAssetPath + "Copy Full Path %#2", false, Priority + 2)]
