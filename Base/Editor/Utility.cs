@@ -37,10 +37,21 @@ namespace SKTools.Base.Editor
 #endif
             Application.OpenURL(filePath);
         }
-        
+       
+        public static string GetAssePathRelativeToExecutableCurrentFile(params string[] subName)
+        {
+            var startIndex = Application.dataPath.Length - "Assets".Length;
+            return GetPathRelativeToExecutableCurrentFile(3, subName).Substring(startIndex);
+        }
+
         public static string GetPathRelativeToExecutableCurrentFile(params string[] subName)
         {
-            var path = GetDirectoryRelativeToExecutableCurrentFile(2);
+            return GetPathRelativeToExecutableCurrentFile(3, subName);
+        }
+
+        public static string GetPathRelativeToExecutableCurrentFile(int frameIndex = 2, params string[] subName)
+        {
+            var path = GetDirectoryRelativeToExecutableCurrentFile(frameIndex);
             foreach (var name in subName)
             {
                 path = Path.Combine(path, name);
