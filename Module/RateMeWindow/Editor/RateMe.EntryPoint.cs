@@ -65,13 +65,13 @@ namespace SKTools.Module.RateMeWindow
         {
             Show(null);
         }
-      
+
         [MenuItem("SKTools/Rate Me Save Default Config")]
         private static void SaveConfigMenuItem()
         {
             new RateMeConfig().Save();
         }
-        
+
 #endif
     }
 }
