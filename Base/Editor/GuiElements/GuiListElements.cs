@@ -36,7 +36,7 @@ namespace SKTools.Base.Editor.GuiElementsSystem
         public T GetChild<T>(string id) where T : IGuiElement
         {
             if (id == Id) return (T) (object) this;
-            
+
             foreach (var el in List)
             {
                 var child = el.GetChild<T>(id);

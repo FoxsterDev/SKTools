@@ -7,7 +7,7 @@ namespace SKTools.Module.RateMeWindow
     public partial class RateMe
     {
         private string _feedbackMessage;
-        
+
         private void DrawFeedbackGui(IGUIContainer window)
         {
             var position = window.Position;
@@ -17,7 +17,8 @@ namespace SKTools.Module.RateMeWindow
             _feedbackMessage = GUI.TextArea(new Rect(5, 24, position.width - 10, position.height - 128),
                 _feedbackMessage);
 
-            if (GUI.Button(new Rect(position.width / 2 - 156, position.height - 64, 156, 64), Config.FeedbackBackButtonText,
+            if (GUI.Button(new Rect(position.width / 2 - 156, position.height - 64, 156, 64),
+                Config.FeedbackBackButtonText,
                 _targetGui.Assets.ButtonStyle))
             {
                 window.DrawGuiCallback = DrawRateGui;

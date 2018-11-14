@@ -13,7 +13,7 @@ namespace SKTools.Base.Editor.GuiElementsSystem
         public bool HasFocusControl { get; private set; }
 
         private GUILayoutOption[] _options;
-        
+
         public GuiLayoutSearchBar(string id = "SearchTextField", params GUILayoutOption[] options)
         {
             Id = id;
@@ -61,7 +61,7 @@ namespace SKTools.Base.Editor.GuiElementsSystem
             Draw();
             return Text;
         }
-        
+
         public T GetChild<T>(string id) where T : IGuiElement
         {
             if (Id == id) return (T) (object) this;

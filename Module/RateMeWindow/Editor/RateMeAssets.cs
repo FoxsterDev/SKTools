@@ -7,11 +7,11 @@ namespace SKTools.Module.RateMeWindow
     {
         public const int MaxStar = 5;
         public const int SizeStar = 64;
-        
+
         private GUIStyle _labelStyle, _buttonStyle;
         private GUIStyle _unstarredButtonStyle, _starredButtonStyle;
         private GUIStyle[] _starStyles;
-        
+
         public Assets(string assetsDirectory) : base(assetsDirectory)
         {
         }
@@ -20,7 +20,7 @@ namespace SKTools.Module.RateMeWindow
         {
             get { return _starStyles ?? (_starStyles = new GUIStyle[MaxStar]); }
         }
-        
+
         public Texture2D UnstarredImage
         {
             get { return Get<Texture2D>("unstarred"); }
@@ -109,6 +109,5 @@ namespace SKTools.Module.RateMeWindow
                 return _starredButtonStyle;
             }
         }
-
     }
 }

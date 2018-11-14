@@ -8,12 +8,12 @@ namespace SKTools.Module.RateMeWindow
     {
         private int _starsCount;
         private Rect[] _starRects;
-       
+
         private float SizeStar
         {
             get { return (_targetGui.Assets.StarredImage.width + _targetGui.Assets.StarredImage.height) * 0.5f; }
         }
-        
+
         private void DrawRateGui(IGUIContainer window)
         {
             var position = window.Position;
@@ -30,7 +30,7 @@ namespace SKTools.Module.RateMeWindow
             {
                 rect.x += offsetX;
                 _starRects[i] = rect;
-                
+
                 if (GUI.Button(_starRects[i], string.Empty, _targetGui.Assets.StarStyles[i]))
                 {
                     _starsCount = i + 1;
@@ -64,7 +64,7 @@ namespace SKTools.Module.RateMeWindow
                 {
                     Application.OpenURL(Config.RateMainUrl);
                 }
-                
+
                 window.Close();
                 return;
             }

@@ -11,13 +11,15 @@ namespace SKTools.Module.RateMeWindow
     {
         public byte MinStar = 3;
         public byte MaxStar = 5;
-        
+
         public string RequestLabel = "How do you like it?";
         public string RateButtonText = "Rate";
-        
-        public string RateMainUrl = "https://assetstore.unity.com/packages/tools/utilities/monkey-editor-commands-productivity-booster-119938";
+
+        public string RateMainUrl =
+            "https://assetstore.unity.com/packages/tools/utilities/monkey-editor-commands-productivity-booster-119938";
+
         public string RateMainButtonText = "Rate me on AssetStore";
-        
+
         public string RateOptionalUrl = "";
         public string RateOptionalButtonText = "";
         public string RateOptionalMessage = "";
@@ -35,11 +37,11 @@ namespace SKTools.Module.RateMeWindow
         {
             EditorJsonUtility.FromJsonOverwrite(json, this);
         }
-        
+
         public RateMeConfig()
         {
         }
-        
+
         public RateMeConfig Load()
         {
             try
@@ -55,10 +57,11 @@ namespace SKTools.Module.RateMeWindow
             {
                 Debug.LogException(ex);
             }
+
             return new RateMeConfig();
         }
 
-        public void Save(string relativeFolder = "Editor Resources" , string fileName = "RateMeConfig.json")
+        public void Save(string relativeFolder = "Editor Resources", string fileName = "RateMeConfig.json")
         {
             try
             {

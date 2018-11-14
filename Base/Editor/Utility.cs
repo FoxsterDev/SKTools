@@ -14,7 +14,6 @@ namespace SKTools.Base.Editor
         /// <param name="method">Method what should be runned</param>
         public static void DiagnosticRun(Action method)
         {
-            
 #if !FOXSTER_DEV_MODE
             method();
 #else
@@ -37,7 +36,7 @@ namespace SKTools.Base.Editor
 #endif
             Application.OpenURL(filePath);
         }
-       
+
         public static string GetAssePathRelativeToExecutableCurrentFile(params string[] subName)
         {
             var startIndex = Application.dataPath.Length - "Assets".Length;
@@ -56,9 +55,10 @@ namespace SKTools.Base.Editor
             {
                 path = Path.Combine(path, name);
             }
+
             return path;
         }
-        
+
         /// <summary>
         /// Get directory of place where was called this method, simple way to detect places scripts. To avoid hardcoded pathes
         /// and search in the full project

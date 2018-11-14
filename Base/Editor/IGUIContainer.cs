@@ -8,9 +8,9 @@ namespace SKTools.Base.Editor
     {
         Rect Position { get; }
         GUIDelegate<IGUIContainer> DrawGuiCallback { set; }
-        GUIDelegate<IGUIContainer> FocusCallback{ set; }
-        GUIDelegate<IGUIContainer> LostFocusCallback{ set; }
-        GUIDelegate<IGUIContainer> CloseCallback{ set; }
+        GUIDelegate<IGUIContainer> FocusCallback { set; }
+        GUIDelegate<IGUIContainer> LostFocusCallback { set; }
+        GUIDelegate<IGUIContainer> CloseCallback { set; }
         void Init();
         void Show();
         void Focus();

@@ -11,7 +11,8 @@ namespace SKTools.Base.Editor.GuiElementsSystem
         private Func<bool> _getValue;
         private GUILayoutOption[] _options;
 
-        public GuiLayoutToggle(string label, Action<bool> setValue, Func<bool> getValue, params GUILayoutOption[] options)
+        public GuiLayoutToggle(string label, Action<bool> setValue, Func<bool> getValue,
+            params GUILayoutOption[] options)
         {
             Id = label;
             Label = label;
@@ -19,7 +20,7 @@ namespace SKTools.Base.Editor.GuiElementsSystem
             _getValue = getValue;
             _options = options;
         }
-        
+
         public void Draw()
         {
             _setValue(GUILayout.Toggle(_getValue.Invoke(), Id, _options));

@@ -8,7 +8,7 @@ namespace SKTools.Module.RateMeWindow
     {
         private Surrogate<IGUIContainer, Assets> _targetGui;
         private RateMeConfig _config;
-        
+
         private static RateMe _instance;
 
         private static RateMe GetRateMe()
@@ -22,12 +22,12 @@ namespace SKTools.Module.RateMeWindow
             instance._config = config;
             instance.SetUpWindow(true);
         }
-        
+
         private RateMeConfig Config
         {
             get { return _config ?? (_config = new RateMeConfig().Load()); }
         }
-        
+
         [InitializeOnLoadMethod]
         private static void RateMeWindow_CheckReload()
         {
@@ -38,15 +38,15 @@ namespace SKTools.Module.RateMeWindow
         {
             var container = CustomEditorWindow<Window>.GetWindow(createIfNotExist);
             if (container == null) return;
-            
+
             _feedbackMessage = Config.FeedbackMessage;
             _starRects = new Rect[Config.MaxStar];
-            
+
             var assetsDirectory = Utility.GetPathRelativeToExecutableCurrentFile("Editor Resources");
             var assets = new Assets(assetsDirectory);
 
             Utility.DiagnosticRun(assets.Load);
-                
+
             _targetGui = new Surrogate<IGUIContainer, Assets>(container, assets);
             _targetGui.Container.DrawGuiCallback = DrawRateGui;
 
@@ -55,12 +55,11 @@ namespace SKTools.Module.RateMeWindow
                 _targetGui.Container.Show();
             }
 
-           
+
             SetCountStar(1);
         }
-                
+
 #if FOXSTER_DEV_MODE
-     
         [MenuItem("SKTools/Rate Me Test")]
         private static void ShowWindowMenuItem()
         {
@@ -74,6 +73,5 @@ namespace SKTools.Module.RateMeWindow
         }
         
 #endif
-
     }
 }
