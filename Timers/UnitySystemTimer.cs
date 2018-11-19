@@ -10,8 +10,9 @@ namespace SKTools.Base
     public class UnitySystemTimer : IDisposable
     {
         private const ushort DEFAULT_INTERVAL = 1000;
+
         private TimeSpan _updateInterval;
-        private Timer _systemTimer;
+        private Timer _timer;
         private TimeSpan _timeSpan;
         private bool _isCooldownMode;
 
@@ -23,10 +24,10 @@ namespace SKTools.Base
         /// </summary>
         public UnitySystemTimer()
         {
-            _updateInterval = TimeSpan.FromMilliseconds(DEFAULT_INTERVAL);
-            _systemTimer = new Timer { Interval = DEFAULT_INTERVAL };
-            _systemTimer.AutoReset = true;
-            _systemTimer.Enabled = false;
+            _timer = new Timer();
+            _timer.AutoReset = true;
+            _timer.Enabled = false;
+            SetInterval(DEFAULT_INTERVAL);
         }
 
         public bool IsStarted { get; private set; }
@@ -36,56 +37,51 @@ namespace SKTools.Base
             get { return _timeSpan; }
         }
 
-        public void SetInterval(ushort intervalMs)
+        public void SetInterval(ushort milliseconds)
         {
-            _systemTimer.Interval = intervalMs;
-            _updateInterval = TimeSpan.FromMilliseconds(DEFAULT_INTERVAL);
+            _timer.Interval = milliseconds;
+            _updateInterval = TimeSpan.FromMilliseconds(milliseconds);
         }
 
-        public void Start()
+        public void StartWithSeconds(int totalSeconds)
         {
-            StartInternal(TimeSpan.Zero, false);
-        }
-
-        public void StartCooldownWithSeconds(int seconds)
-        {
-            StartInternal(TimeSpan.FromSeconds(seconds), true);
+            StartInternal(TimeSpan.FromSeconds(totalSeconds), true);
         }
 
         private void StartInternal(TimeSpan timeSpan, bool isCoolDown)
         {
-            Assert.IsNotNull(_systemTimer, "Cannot use timer after realising");
+            Assert.IsNotNull(_timer, "Cannot use this timer after realising");
             Assert.IsFalse(IsStarted, "This timer is already started.");
-            Assert.IsTrue(IsUnityContex, "The unitysystemtimer is not thread safe, please call only on unity main thread");
+            Assert.IsTrue(InUnityContex, "The timer is not thread safe, please call only on unity main thread");
 
             IsStarted = true;
             _isCooldownMode = isCoolDown;
             _timeSpan = timeSpan;
-            _systemTimer.Elapsed += OnSystemTimerElapsed;
-            _systemTimer.Enabled = true;
+            _timer.Elapsed += OnSystemTimerElapsed;
+            _timer.Enabled = true;
             SafeInvoke(OnUpdated, _timeSpan);
         }
 
         public void Stop()
         {
-            Assert.IsNotNull(_systemTimer, "Cannot use timer after realising");
+            Assert.IsNotNull(_timer, "Cannot use this timer after realising");
             Assert.IsTrue(IsStarted, "This timer is not started");
-            Assert.IsTrue(IsUnityContex, "The unitysystemtimer is not thread safe, please call only on unity main thread");
+            Assert.IsTrue(InUnityContex, "The timer is not thread safe, please call only on unity main thread");
 
             IsStarted = false;
-            _systemTimer.Elapsed -= OnSystemTimerElapsed;
-            _systemTimer.Enabled = false;
+            _timer.Elapsed -= OnSystemTimerElapsed;
+            _timer.Enabled = false;
             SafeInvoke(OnFinished, _timeSpan);
         }
 
         public void Release()
         {
-            if (_systemTimer != null)
+            if (_timer != null)
             {
-                _systemTimer.Elapsed -= OnSystemTimerElapsed;
-                _systemTimer.Enabled = false;
-                _systemTimer.Dispose();
-                _systemTimer = null;
+                _timer.Elapsed -= OnSystemTimerElapsed;
+                _timer.Enabled = false;
+                _timer.Dispose();
+                _timer = null;
             }
         }
 
@@ -151,7 +147,7 @@ namespace SKTools.Base
 
         private static SynchronizationContext _unitySynchronizationContext;
 
-        private static bool IsUnityContex
+        private static bool InUnityContex
         {
             get { return _unitySynchronizationContext == SynchronizationContext.Current; }
         }
@@ -174,7 +170,7 @@ namespace SKTools.Base
 
             try
             {
-                if (IsUnityContex)
+                if (InUnityContex)
                 {
                     action();
                 }

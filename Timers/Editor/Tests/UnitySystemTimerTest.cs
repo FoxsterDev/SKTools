@@ -37,7 +37,7 @@ namespace SKTools.Base.Tests
             };
 
             watch.Start();
-            timer.StartCooldownWithSeconds(seconds);
+            timer.StartWithSeconds(seconds);
             yield return new WaitWhile(() => timer.IsStarted);
         }
 
@@ -69,34 +69,7 @@ namespace SKTools.Base.Tests
             };
 
             watch.Start();
-            timer.StartCooldownWithSeconds(seconds);
-            yield return new WaitWhile(() => timer.IsStarted);
-        }
-        
-        [UnityTest]
-        [Timeout(10 * 1000)]
-        public IEnumerator TestWhenInterval1000ms()
-        {
-            var countUpdated = 0;
-            var seconds = 5;
-            ushort interval = 1000;
-            var timer = new UnitySystemTimer();
-            timer.SetInterval(interval);
-            var watch = new Stopwatch();
-
-            timer.OnUpdated += delegate(TimeSpan time)
-            {
-                UnityEngine.Debug.Log(time);
-                countUpdated++;
-                if (countUpdated == seconds + 1)
-                {
-                    timer.Stop();
-                    Assert.IsTrue((int) timer.Value.TotalSeconds == seconds);
-                }
-            };
-
-            watch.Start();
-            timer.Start();
+            timer.StartWithSeconds(seconds);
             yield return new WaitWhile(() => timer.IsStarted);
         }
     }
