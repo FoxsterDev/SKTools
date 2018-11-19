@@ -3,8 +3,7 @@ using System.Threading;
 using System.Timers;
 using UnityEngine;
 using UnityEngine.Assertions;
-using Timer = System.Timers.Timer;
-
+using Timer = System.Timers.Timer ;
 namespace SKTools.Base
 {
     public abstract class UnitySystemClock : IDisposable
@@ -15,6 +14,10 @@ namespace SKTools.Base
         protected TimeSpan _updateInterval;
         protected TimeSpan _timeSpan;
 
+        /// <summary>
+        /// This event will be fires on unity main thread
+        /// After started, immediately will be fire update , and then every interval
+        /// </summary>
         public event Action<TimeSpan> OnUpdated;
         public event Action<TimeSpan> OnStopped;
 
@@ -41,10 +44,27 @@ namespace SKTools.Base
             _updateInterval = TimeSpan.FromMilliseconds(milliseconds);
         }
 
+        public void Stop()
+        {
+            Assert.IsNotNull(_timer, "Cannot use this timer after realising");
+            Assert.IsTrue(IsStarted, "This timer is not started");
+            Assert.IsTrue(InUnityContex, "The timer is not thread safe, please call only on unity main thread");
+
+            IsStarted = false;
+            _timer.Elapsed -= OnSystemTimerElapsed;
+            _timer.Enabled = false;
+            SafeInvoke(OnStopped, _timeSpan);
+        }
+
         void IDisposable.Dispose()
         {
             Release();
             GC.SuppressFinalize(this);
+        }
+
+        private void OnSystemTimerElapsed(object sender, ElapsedEventArgs e)
+        {
+            CheckUnityContext(OnTimerElapsed);
         }
 
         protected static void SafeInvoke(Action<TimeSpan> action, TimeSpan time)
@@ -78,26 +98,9 @@ namespace SKTools.Base
             FireUpdate();
         }
 
-        public void Stop()
-        {
-            Assert.IsNotNull(_timer, "Cannot use this timer after realising");
-            Assert.IsTrue(IsStarted, "This timer is not started");
-            Assert.IsTrue(InUnityContex, "The timer is not thread safe, please call only on unity main thread");
-
-            IsStarted = false;
-            _timer.Elapsed -= OnSystemTimerElapsed;
-            _timer.Enabled = false;
-            SafeInvoke(OnStopped, _timeSpan);
-        }
-
         protected void FireUpdate()
         {
             SafeInvoke(OnUpdated, _timeSpan);
-        }
-
-        private void OnSystemTimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            CheckUnityContext(OnTimerElapsed);
         }
 
         private void Release()
