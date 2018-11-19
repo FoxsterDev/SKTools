@@ -26,7 +26,7 @@ namespace SKTools.Base.Tests
                 countUpdated++;
             };
 
-            timer.OnFinished += delegate(TimeSpan time)
+            timer.OnStopped += delegate(TimeSpan time)
             {
                 watch.Stop();
                 Assert.IsTrue((int) watch.Elapsed.TotalSeconds == seconds);
@@ -58,7 +58,7 @@ namespace SKTools.Base.Tests
                 countUpdated++;
             };
 
-            timer.OnFinished += delegate(TimeSpan time)
+            timer.OnStopped += delegate(TimeSpan time)
             {
                 watch.Stop();
                 Assert.IsTrue((int) watch.Elapsed.TotalSeconds == seconds);
