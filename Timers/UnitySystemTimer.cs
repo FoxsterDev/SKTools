@@ -2,7 +2,7 @@
 
 namespace SKTools.Base
 {
-    public class UnitySystemTimer : UnitySystemClock
+    public class UnitySystemTimer : UnitySystemClockObsolete
     {
         /// <summary>
         /// This call is synchronized with unity main thread
