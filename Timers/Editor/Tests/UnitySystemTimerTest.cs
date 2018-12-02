@@ -16,7 +16,7 @@ namespace SKTools.Base.Tests
             var countUpdated = 0;
             var seconds = 5;
             ushort interval = 1000;
-            var timer = new UnitySystemTimer();
+            var timer = new UnitySystemTimerObsolete();
             timer.SetInterval(interval);
             var watch = new Stopwatch();
 
@@ -48,7 +48,7 @@ namespace SKTools.Base.Tests
             var countUpdated = 0;
             var seconds = 2;
             ushort interval = 100;
-            var timer = new UnitySystemTimer();
+            var timer = new UnitySystemTimerObsolete();
             timer.SetInterval(interval);
             var watch = new Stopwatch();
 

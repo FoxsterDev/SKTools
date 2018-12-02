@@ -1,29 +1,145 @@
 ﻿using System;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace SKTools.Base
 {
-    public class UnitySystemClock : IDisposable
-    {
-        private static SynchronizationContext _unitySynchronizationContext;
+    #region Timer
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void UnitySynchronizationContextCatch()
+    public class Timer : UnitySystemClock
+    {
+        private TimeSpan _timeSpan;
+
+        public TimeSpan RemainingTime;
+        public event Action OnTimesUp;
+
+        public Timer(uint interval)
+            : base(interval)
         {
-            _unitySynchronizationContext = SynchronizationContext.Current;
         }
 
-        public event Action<object, DateTime> OnIntervalElapsed;
+        public bool IsPaused { get; private set; }
+        public bool IsStarted { get; private set; }
+
+        public void Start(TimeSpan timeSpan)
+        {
+            Assert.IsFalse(IsStarted, "Timer has already started!");
+            RemainingTime = _timeSpan = timeSpan;
+            IsPaused = false;
+            IsStarted = true;
+            StartInternal();
+        }
+
+        public void Resume()
+        {
+            Assert.IsTrue(IsPaused, "Cannot resume not paused timer!");
+            IsPaused = false;
+        }
+
+        public void Pause()
+        {
+            Assert.IsTrue(IsStarted, "Cannot pause not started timer!");
+            IsPaused = true;
+        }
+
+        public void Cancel()
+        {
+            Assert.IsTrue(IsStarted, "Cannot cancel not started timer!");
+            IsStarted = false;
+            IsPaused = false;
+            StopInternal();
+        }
+
+        public void Restart()
+        {
+            Start(_timeSpan);
+        }
+
+        protected override void FireIntervalElapsed(TimeSpan intervalElapsed)
+        {
+            if (IsPaused)
+            {
+                return;
+            }
+
+            base.FireIntervalElapsed(intervalElapsed);
+
+            RemainingTime -= intervalElapsed;
+            if (RemainingTime <= TimeSpan.Zero)
+            {
+                RemainingTime = TimeSpan.Zero;
+                IsStarted = false;
+                StopInternal();
+                if (OnTimesUp != null)
+                {
+                    OnTimesUp.Invoke();
+                }
+            }
+        }
+    }
+
+    #endregion
+
+    #region StopWatch
+
+    public class StopWatch : UnitySystemClock
+    {
+        public StopWatch(uint interval)
+            : base(interval)
+        {
+        }
+
+        public void StartStopWatch()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ResumeStopWatch()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ResetStopWatch()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    #endregion
+
+    public abstract class UnitySystemClock : IDisposable
+    {
+        private const uint MinIntervalMs = 15;
+        private readonly TimerCallback _callback;
 
         private uint _interval;
         private bool _enabled;
         private SynchronizationContext _synchronizationContext;
-        private bool _autoReset;
         private bool _disposed;
-        private Timer _timer;
-        private readonly TimerCallback _callback;
+        private System.Threading.Timer _timer;
         private object _cookie;
+
+        private DateTime _timeTarget;
+        private uint _totalSeconds;
+
+        private DateTime _previousDateTime;
+
+        /// <summary>
+        /// Will be fired on provided SynchronizationContext
+        /// </summary>
+        public event Action<TimeSpan> OnIntervalElapsed;
+
+        /// <summary>
+        /// Create unity friendly system timer
+        /// </summary>
+        /// <param name="interval">Sets the interval, expressed in milliseconds, at which to raise the Elapsed event.</param>
+        protected UnitySystemClock(uint interval)
+        {
+            _interval = Math.Max(interval, MinIntervalMs); //the minimum system clock interval
+            _enabled = false;
+            _callback = TimerCallback;
+        }
 
         /// <summary>
         /// Gets or sets the interval, expressed in milliseconds, at which to raise the Elapsed event.
@@ -33,79 +149,80 @@ namespace SKTools.Base
             get { return _interval; }
             set
             {
-                _interval = Math.Max(value, 15);
+                _interval = Math.Max(value, MinIntervalMs);
                 if (_timer == null)
+                {
                     return;
+                }
 
-                Update();
+                _timer.Change(_interval, _interval);
             }
         }
 
+        public static SynchronizationContext SynchronizationContext
+        {
+            get;
+            private set;
+            // set { _synchronizationContext = value; }
+        }
+
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            StopInternal();
+            _disposed = true;
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void UnitySynchronizationContextCatch()
+        {
+            SynchronizationContext = SynchronizationContext.Current;
+        }
+
         /// <summary>
-        /// Gets or sets a Boolean indicating whether the Timer should raise the Elapsed event only once (false) or repeatedly (true).
         /// </summary>
-        private bool AutoReset
-        {
-            get { return _autoReset; }
-            set
-            {
-                if (_autoReset == value)
-                    return;
-
-                _autoReset = value;
-                if (_timer == null)
-                    return;
-
-                Update();
-            }
-        }
-
-        public SynchronizationContext SynchronizationContext
-        {
-            get { return _synchronizationContext; }
-            set { _synchronizationContext = value; }
-        }
-
-        /// <summary>
-        /// Create unity friendly system timer
-        /// </summary>
-        /// <param name="interval">Sets the interval, expressed in milliseconds, at which to raise the Elapsed event.</param>
-        /// <param name="autoReset"><Sets a Boolean indicating whether the Timer should raise the Elapsed event only once (false) or repeatedly (true)./param>
-        /// <param name="synchronizationContext">Sync context for callback OnIntervalElapsed. Default is unity context</param>
-        public UnitySystemClock(uint interval, bool autoReset = true, SynchronizationContext synchronizationContext = null)
-        {
-            _interval = Math.Max(interval, 15); //the minimum system clock interval
-            _enabled = false;
-            _autoReset = autoReset;
-            _callback = TimerCallback;
-            SynchronizationContext = synchronizationContext;
-        }
-
-        public void Start()
+        /// <exception cref="ObjectDisposedException"></exception>
+        protected void StartInternal()
         {
             if (_disposed)
+            {
                 throw new ObjectDisposedException(GetType().Name);
+            }
 
             if (_enabled)
+            {
                 return;
+            }
 
             _enabled = true;
 
             if (_timer == null)
             {
                 _cookie = new object();
-                _timer = new Timer(
+                _previousDateTime = DateTime.Now;
+                _timer = new System.Threading.Timer(
                     _callback, _cookie, _interval, _autoReset
                                                        ? _interval
                                                        : 0);
             }
             else
             {
-                Update();
+                _timer.Change(
+                    _interval, _autoReset
+                                   ? _interval
+                                   : 0);
             }
         }
 
-        public void Stop()
+        /// <summary>
+        /// Stop the current timer
+        /// </summary>
+        protected void StopInternal()
         {
             _enabled = false;
 
@@ -117,19 +234,23 @@ namespace SKTools.Base
             }
         }
 
-        private void Update()
+        protected virtual void FireIntervalElapsed(TimeSpan timeSpan)
         {
-            _timer.Change(
-                _interval, _autoReset
-                               ? _interval
-                               : 0);
-        }
+            var onIntervalElapsed = OnIntervalElapsed;
+            if (onIntervalElapsed == null)
+            {
+                return;
+            }
 
+            onIntervalElapsed(timeSpan);
+        }
 
         private void TimerCallback(object state)
         {
             if (state != _cookie)
+            {
                 return;
+            }
 
             if (!_autoReset)
             {
@@ -138,18 +259,14 @@ namespace SKTools.Base
 
             try
             {
-                var onIntervalElapsed = OnIntervalElapsed;
-                if (onIntervalElapsed == null)
-                    return;
-
-                var context = SynchronizationContext ?? _unitySynchronizationContext;
+                var context = SynchronizationContext ?? SynchronizationContext;
                 if (context == SynchronizationContext.Current)
                 {
-                    onIntervalElapsed(this, DateTime.Now);
+                    FireIntervalElapsed();
                 }
                 else
                 {
-                    context.Post(_ => onIntervalElapsed(this, DateTime.Now), state);
+                    context.Post(_ => FireIntervalElapsed(), state); //async 
                 }
             }
             catch
@@ -158,45 +275,21 @@ namespace SKTools.Base
             }
         }
 
-        void IDisposable.Dispose()
+        private void FireIntervalElapsed()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            var now = DateTime.Now;
+
+            if (now > _previousDateTime)
+            {
+                var interval = now - _previousDateTime;
+                _previousDateTime = now;
+                FireIntervalElapsed(interval);
+            }
         }
 
         ~UnitySystemClock()
         {
             Dispose(false);
         }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            Stop();
-            _disposed = true;
-        }
-
-        #region Timers
-
-        public event Action<object, uint, uint> OnTimerUpdated; //uint timer, total seconds, left seconds
-
-        private DateTime _timeTarget;
-        private uint _totalSeconds;
-
-        public void StartTimerWithSeconds(uint totalSeconds)
-        {
-            //var timeSpan = TimeSpan.FromSeconds(totalSeconds);
-            _totalSeconds = totalSeconds;
-            _timeTarget = DateTime.Now.AddSeconds(totalSeconds);
-
-            Start();
-            if (OnTimerUpdated != null)
-            {
-                OnTimerUpdated(this, totalSeconds, totalSeconds);
-            }
-
-            //StartInternal(TimeSpan.FromSeconds(totalSeconds));
-        }
-
-        #endregion
     }
 }
