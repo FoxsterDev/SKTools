@@ -9,9 +9,9 @@ namespace SKTools.Base
 
     public class Timer : UnitySystemClock
     {
-        private TimeSpan _timeSpan;
-
         public TimeSpan RemainingTime;
+        public TimeSpan StartTime;
+
         public event Action OnTimesUp;
 
         public Timer(uint interval)
@@ -22,10 +22,21 @@ namespace SKTools.Base
         public bool IsPaused { get; private set; }
         public bool IsStarted { get; private set; }
 
+        public void StartWithSeconds(uint seconds)
+        {
+            Start(TimeSpan.FromSeconds(seconds));
+        }
+
+        public void StartWithMilliseconds(uint ms)
+        {
+            Start(TimeSpan.FromMilliseconds(ms));
+        }
+
         public void Start(TimeSpan timeSpan)
         {
             Assert.IsFalse(IsStarted, "Timer has already started!");
-            RemainingTime = _timeSpan = timeSpan;
+
+            RemainingTime = StartTime = timeSpan;
             IsPaused = false;
             IsStarted = true;
             StartInternal();
@@ -34,18 +45,21 @@ namespace SKTools.Base
         public void Resume()
         {
             Assert.IsTrue(IsPaused, "Cannot resume not paused timer!");
+
             IsPaused = false;
         }
 
         public void Pause()
         {
             Assert.IsTrue(IsStarted, "Cannot pause not started timer!");
+
             IsPaused = true;
         }
 
         public void Cancel()
         {
             Assert.IsTrue(IsStarted, "Cannot cancel not started timer!");
+
             IsStarted = false;
             IsPaused = false;
             StopInternal();
@@ -53,11 +67,16 @@ namespace SKTools.Base
 
         public void Restart()
         {
-            Start(_timeSpan);
+            Start(StartTime);
         }
 
         protected override void FireIntervalElapsed(TimeSpan intervalElapsed)
         {
+            if (!IsStarted)
+            {
+                return;
+            }
+
             if (IsPaused)
             {
                 return;
@@ -71,6 +90,7 @@ namespace SKTools.Base
                 RemainingTime = TimeSpan.Zero;
                 IsStarted = false;
                 StopInternal();
+
                 if (OnTimesUp != null)
                 {
                     OnTimesUp.Invoke();
@@ -110,23 +130,18 @@ namespace SKTools.Base
 
     public abstract class UnitySystemClock : IDisposable
     {
-        private const uint MinIntervalMs = 15;
+        private const uint MinIntervalMs = 1;
         private readonly TimerCallback _callback;
 
         private uint _interval;
         private bool _enabled;
-        private SynchronizationContext _synchronizationContext;
         private bool _disposed;
-        private System.Threading.Timer _timer;
         private object _cookie;
-
-        private DateTime _timeTarget;
-        private uint _totalSeconds;
-
+        private System.Threading.Timer _timer;
         private DateTime _previousDateTime;
 
         /// <summary>
-        /// Will be fired on provided SynchronizationContext
+        /// Will be fired on UnitySynchronizationContext
         /// </summary>
         public event Action<TimeSpan> OnIntervalElapsed;
 
@@ -159,32 +174,8 @@ namespace SKTools.Base
             }
         }
 
-        public static SynchronizationContext SynchronizationContext
-        {
-            get;
-            private set;
-            // set { _synchronizationContext = value; }
-        }
-
-        void IDisposable.Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            StopInternal();
-            _disposed = true;
-        }
-
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        private static void UnitySynchronizationContextCatch()
-        {
-            SynchronizationContext = SynchronizationContext.Current;
-        }
-
         /// <summary>
+        /// Start threading timer
         /// </summary>
         /// <exception cref="ObjectDisposedException"></exception>
         protected void StartInternal()
@@ -205,17 +196,11 @@ namespace SKTools.Base
             {
                 _cookie = new object();
                 _previousDateTime = DateTime.Now;
-                _timer = new System.Threading.Timer(
-                    _callback, _cookie, _interval, _autoReset
-                                                       ? _interval
-                                                       : 0);
+                _timer = new System.Threading.Timer(_callback, _cookie, _interval, _interval);
             }
             else
             {
-                _timer.Change(
-                    _interval, _autoReset
-                                   ? _interval
-                                   : 0);
+                _timer.Change( _interval, _interval);
             }
         }
 
@@ -234,17 +219,6 @@ namespace SKTools.Base
             }
         }
 
-        protected virtual void FireIntervalElapsed(TimeSpan timeSpan)
-        {
-            var onIntervalElapsed = OnIntervalElapsed;
-            if (onIntervalElapsed == null)
-            {
-                return;
-            }
-
-            onIntervalElapsed(timeSpan);
-        }
-
         private void TimerCallback(object state)
         {
             if (state != _cookie)
@@ -252,15 +226,10 @@ namespace SKTools.Base
                 return;
             }
 
-            if (!_autoReset)
-            {
-                _enabled = false;
-            }
-
             try
             {
-                var context = SynchronizationContext ?? SynchronizationContext;
-                if (context == SynchronizationContext.Current)
+                var context = _unitySynchronizationContext;
+                if (context == null || context == SynchronizationContext.Current)
                 {
                     FireIntervalElapsed();
                 }
@@ -287,9 +256,45 @@ namespace SKTools.Base
             }
         }
 
+        protected virtual void FireIntervalElapsed(TimeSpan timeSpan)
+        {
+            var onIntervalElapsed = OnIntervalElapsed;
+            if (onIntervalElapsed == null)
+            {
+                return;
+            }
+
+            onIntervalElapsed(timeSpan);
+        }
+
         ~UnitySystemClock()
         {
             Dispose(false);
+        }
+
+        void IDisposable.Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            _disposed = true;
+            StopInternal();
+        }
+
+        private static SynchronizationContext _unitySynchronizationContext;
+
+        public static SynchronizationContext UnitySynchronizationContext
+        {
+            get { return _unitySynchronizationContext; }
+        }
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void UnitySynchronizationContextCatch()
+        {
+            _unitySynchronizationContext = SynchronizationContext.Current;
         }
     }
 }
