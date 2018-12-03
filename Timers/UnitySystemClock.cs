@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -7,15 +8,42 @@ namespace SKTools.Base
 {
     #region Timer
 
-    public class Timer : UnitySystemClock
+    /// <summary>
+    /// Generates an event after a set interval, with an option to generate recurring events
+    /// Example of usage
+    /*[RequireComponent(typeof(Text))]
+    public class TimerExample : MonoBehaviour
+    {
+        [SerializeField] private uint _seconds = 60;
+        private Timer _timer;
+    
+        void Start ()
+        {
+            var label = GetComponent<Text>();
+            _timer = new Timer(1000);
+            _timer.OnIntervalElapsed += delegate(TimeSpan span)
+            {
+                label.text = (Mathf.CeilToInt((float)_timer.RemainingTime.TotalSeconds)).ToString();
+            };
+            _timer.StartWithSeconds(_seconds);
+        }
+        
+        //dont forget to dispose it
+        void OnDestroy()
+        {
+            ((IDisposable)_timer).Dispose();
+        }
+    }*/
+    /// </summary>
+    public sealed class Timer : UnitySystemClock
     {
         public TimeSpan RemainingTime;
         public TimeSpan StartTime;
 
         public event Action OnTimesUp;
 
-        public Timer(uint interval)
-            : base(interval)
+        public Timer(uint intervalMilliseconds)
+            : base(intervalMilliseconds)
         {
         }
 
@@ -39,7 +67,7 @@ namespace SKTools.Base
             RemainingTime = StartTime = timeSpan;
             IsPaused = false;
             IsStarted = true;
-            StartInternal();
+            SetEnableState();
         }
 
         public void Resume()
@@ -62,7 +90,7 @@ namespace SKTools.Base
 
             IsStarted = false;
             IsPaused = false;
-            StopInternal();
+            SetDisableState();
         }
 
         public void Restart()
@@ -89,11 +117,21 @@ namespace SKTools.Base
             {
                 RemainingTime = TimeSpan.Zero;
                 IsStarted = false;
-                StopInternal();
+                SetDisableState();
 
-                if (OnTimesUp != null)
+                var onTimesUp = OnTimesUp;
+                if (onTimesUp == null)
                 {
-                    OnTimesUp.Invoke();
+                    return;
+                }
+
+                try
+                {
+                    onTimesUp();
+                }
+                catch
+                {
+                    //ignore
                 }
             }
         }
@@ -103,31 +141,73 @@ namespace SKTools.Base
 
     #region StopWatch
 
-    public class StopWatch : UnitySystemClock
+    public sealed class StopWatch : UnitySystemClock
     {
-        public StopWatch(uint interval)
-            : base(interval)
+        public TimeSpan ElapsedTime;
+        
+        public bool IsPaused { get; private set; }
+        public bool IsStarted { get; private set; }
+
+        
+        public void Start()
+        {
+            Assert.IsFalse(IsStarted, "Timer has already started!");
+
+            IsPaused = false;
+            IsStarted = true;
+            ElapsedTime = TimeSpan.Zero;
+            SetEnableState();
+        }
+        
+        public StopWatch(uint intervalMilliseconds)
+            : base(intervalMilliseconds)
         {
         }
-
-        public void StartStopWatch()
+        
+        public void Pause()
         {
-            throw new NotImplementedException();
+            Assert.IsTrue(IsStarted, "Cannot pause not started timer!");
+
+            IsPaused = true;
+        }
+        
+        public void Resume()
+        {
+            Assert.IsTrue(IsPaused, "Cannot resume not paused timer!");
+
+            IsPaused = false;
         }
 
-        public void ResumeStopWatch()
+        public void Reset()
         {
-            throw new NotImplementedException();
-        }
+            Assert.IsTrue(IsStarted, "Cannot reset not started timer!");
 
-        public void ResetStopWatch()
+            IsStarted = false;
+            IsPaused = false;
+            SetDisableState();
+        }
+        
+        protected override void FireIntervalElapsed(TimeSpan intervalElapsed)
         {
-            throw new NotImplementedException();
+            if (!IsStarted)
+            {
+                return;
+            }
+
+            if (IsPaused)
+            {
+                return;
+            }
+
+            base.FireIntervalElapsed(intervalElapsed);
+            ElapsedTime += intervalElapsed;
         }
     }
 
     #endregion
-
+    
+    #region Clock
+    
     public abstract class UnitySystemClock : IDisposable
     {
         private const uint MinIntervalMs = 1;
@@ -141,17 +221,17 @@ namespace SKTools.Base
         private DateTime _previousDateTime;
 
         /// <summary>
-        /// Will be fired on UnitySynchronizationContext
+        /// It will be fired on UnitySynchronizationContext
         /// </summary>
         public event Action<TimeSpan> OnIntervalElapsed;
 
         /// <summary>
         /// Create unity friendly system timer
         /// </summary>
-        /// <param name="interval">Sets the interval, expressed in milliseconds, at which to raise the Elapsed event.</param>
-        protected UnitySystemClock(uint interval)
+        /// <param name="intervalMilliseconds">Sets the interval, expressed in milliseconds, at which to raise the Elapsed event.</param>
+        protected UnitySystemClock(uint intervalMilliseconds)
         {
-            _interval = Math.Max(interval, MinIntervalMs); //the minimum system clock interval
+            _interval = Math.Max(intervalMilliseconds, MinIntervalMs); //the minimum system clock interval
             _enabled = false;
             _callback = TimerCallback;
         }
@@ -178,7 +258,7 @@ namespace SKTools.Base
         /// Start threading timer
         /// </summary>
         /// <exception cref="ObjectDisposedException"></exception>
-        protected void StartInternal()
+        protected void SetEnableState()
         {
             if (_disposed)
             {
@@ -207,7 +287,7 @@ namespace SKTools.Base
         /// <summary>
         /// Stop the current timer
         /// </summary>
-        protected void StopInternal()
+        protected void SetDisableState()
         {
             _enabled = false;
 
@@ -264,7 +344,14 @@ namespace SKTools.Base
                 return;
             }
 
-            onIntervalElapsed(timeSpan);
+            try
+            {
+                onIntervalElapsed(timeSpan);
+            }
+            catch
+            {
+                //ignore
+            }
         }
 
         ~UnitySystemClock()
@@ -281,15 +368,10 @@ namespace SKTools.Base
         protected virtual void Dispose(bool disposing)
         {
             _disposed = true;
-            StopInternal();
+            SetDisableState();
         }
 
         private static SynchronizationContext _unitySynchronizationContext;
-
-        public static SynchronizationContext UnitySynchronizationContext
-        {
-            get { return _unitySynchronizationContext; }
-        }
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void UnitySynchronizationContextCatch()
@@ -297,4 +379,6 @@ namespace SKTools.Base
             _unitySynchronizationContext = SynchronizationContext.Current;
         }
     }
+    
+    #endregion
 }
