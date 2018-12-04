@@ -1,0 +1,12 @@
+{
+    "name": "SKTools.Module.CrashReporter",
+    "references": [
+        "SKTools.Base.Editor"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
