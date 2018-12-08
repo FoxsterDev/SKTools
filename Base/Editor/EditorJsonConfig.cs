@@ -6,42 +6,41 @@ using UnityEngine;
 namespace SKTools.Base.Editor
 {
     [System.Serializable]
-    public abstract class EditorConfig
+    public abstract class EditorJsonConfig
     {
-        protected EditorConfig()
+        protected EditorJsonConfig()
         {
-            
+           Load();
         }
         
-        protected EditorConfig(string json)
+        protected EditorJsonConfig(string json)
         {
             EditorJsonUtility.FromJsonOverwrite(json, this);
         }
 
-        protected virtual string FileName
+        protected virtual string RelativeFolder
         {
-            get { return GetType().Name + ".json"; }
+            get { return "Editor Resources"; }
         }
         
-        public virtual T Load<T>(string relativeFolder = "Editor Resources") where T : EditorConfig, new()
+        protected abstract string FileName { get; }
+       
+        private void Load()
         {
             try
             {
-                var filePath = Utility.GetPathRelativeToExecutableCurrentFile(relativeFolder, FileName);
+                var filePath = Utility.GetPathRelativeToExecutableCurrentFile(RelativeFolder, FileName);
                 if (File.Exists(filePath))
                 {
                     EditorJsonUtility.FromJsonOverwrite(File.ReadAllText(filePath), this);
-                    return (T)this;
                 }
             }
             catch (Exception ex)
             {
                 Debug.LogException(ex);
             }
-
-            return new T();
         }
-
+       
         public virtual void Save(string relativeFolder = "Editor Resources")
         {
             try
