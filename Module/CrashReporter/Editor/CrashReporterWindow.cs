@@ -6,7 +6,7 @@ namespace SKTools.Module.CrashReporter
     /// <summary>
     /// This window will show rate me window
     /// </summary>
-    internal class Window : CustomEditorWindow<Window>, IGUIContainer
+    internal sealed class Window : CustomEditorWindow<Window>, IGUIContainer
     {
         protected override GUIContent GetTitleContent
         {
@@ -15,12 +15,12 @@ namespace SKTools.Module.CrashReporter
 
         protected override Vector2? GetMinSize
         {
-            get { return new Vector2(400, 400); }
+            get { return new Vector2(600, 400); }
         }
 
         protected override Vector2? GetMaxSize
         {
-            get { return new Vector2(400, 400); }
+            get { return new Vector2(600, 400); }
         }
 
         public Rect Position

@@ -1,17 +1,22 @@
-﻿using System;
-using System.IO;
-using SKTools.Base.Editor;
-using UnityEditor;
-using UnityEngine;
+﻿using SKTools.Base.Editor;
 
 namespace SKTools.Module.CrashReporter
 {
     [System.Serializable]
-    public class CrashReporterConfig
+    public sealed class CrashReporterConfig : EditorJsonConfig
     {
-        public CrashReporterConfig Load()
+        public CrashReporterConfig() : base()
         {
-            return this;
+        }
+
+        public CrashReporterConfig(string json) : base(json)
+        {
+          
+        }
+        
+        protected override string FileName
+        {
+            get { return GetType().Name + ".json"; }
         }
     }
 }

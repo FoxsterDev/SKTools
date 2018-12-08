@@ -25,7 +25,7 @@ namespace SKTools.Module.RateMeWindow
 
         private RateMeConfig Config
         {
-            get { return _config ?? (_config = new RateMeConfig().Load()); }
+            get { return _config ?? (_config = new RateMeConfig()); }
         }
 
         [InitializeOnLoadMethod]

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SKTools.Module.RateMeWindow
 {
-    internal class Assets : AssetsContainer
+    internal sealed class Assets : AssetsContainer
     {
         public const int MaxStar = 5;
         public const int SizeStar = 64;
@@ -54,12 +54,14 @@ namespace SKTools.Module.RateMeWindow
             get
             {
                 if (_buttonStyle == null)
+                {
                     _buttonStyle = new GUIStyle(GUI.skin.button)
                     {
                         alignment = TextAnchor.MiddleCenter,
                         fontStyle = FontStyle.Bold,
                         fontSize = 24
                     };
+                }
 
                 return _buttonStyle;
             }
