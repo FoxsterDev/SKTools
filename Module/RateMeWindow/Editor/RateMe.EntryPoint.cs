@@ -1,4 +1,5 @@
-﻿using SKTools.Base.Editor;
+﻿using System;
+using SKTools.Base.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -70,6 +71,12 @@ namespace SKTools.Module.RateMeWindow
         private static void SaveConfigMenuItem()
         {
             //new RateMeConfig().Save();
+        }
+        
+        [MenuItem("SKTools/Rate Me TestException")]
+        private static void TestException()
+        {
+           throw new Exception("nsnansmnnmn");
         }
 
 #endif

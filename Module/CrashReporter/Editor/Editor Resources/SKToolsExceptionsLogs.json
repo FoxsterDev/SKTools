@@ -9,12 +9,5 @@
         "DontShowAgain": false,
         "Version": 0
     },
-    "Lines": [
-        {
-            "Condition": "Exception: test exception 0.23456",
-            "Stacktrace": "SKTools.Module.CrashReporter.CrashReporter.ShowWindowMenuItem () (at Assets/SKTools/Module/CrashReporter/Editor/CrashReporter.EntryPoint.cs:48)\n",
-            "Type": 4,
-            "Count": 3
-        }
-    ]
+    "Lines": []
 }

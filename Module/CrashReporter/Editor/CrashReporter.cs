@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using SKTools.Base.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -127,6 +128,8 @@ namespace SKTools.Module.CrashReporter
                 _targetGui.Assets.ButtonStyle))
             {
                 Email();
+                Logs.Lines.Clear();
+                Logs.Save(_assetsDirectory);
                 window.Close();
                 return;
             }
@@ -136,7 +139,17 @@ namespace SKTools.Module.CrashReporter
 
         private void Email()
         {
-            
+            var builder = new StringBuilder();
+            builder.Append("mailto:" + Logs.Config.EmailToSend);
+            builder.Append("?subject=" + EscapeURL(Logs.Config.AdditionalInfoToSend));
+            builder.Append("&body=" + EscapeURL(_result));
+
+            Application.OpenURL(builder.ToString());
+        }
+
+        private string EscapeURL(string url)
+        {
+            return WWW.EscapeURL(url).Replace("+", "%20");
         }
     }
 }
