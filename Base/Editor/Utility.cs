@@ -37,18 +37,18 @@ namespace SKTools.Base.Editor
             Application.OpenURL(filePath);
         }
 
-        public static string GetAssePathRelativeToExecutableCurrentFile(params string[] subName)
+        public static string GetAssetPathRelativeToCurrentDirectory(params string[] subName)
         {
             var startIndex = Application.dataPath.Length - "Assets".Length;
-            return GetPathRelativeToExecutableCurrentFile(3, subName).Substring(startIndex);
+            return GetPathRelativeToCurrentDirectory(3, subName).Substring(startIndex);
         }
 
-        public static string GetPathRelativeToExecutableCurrentFile(params string[] subName)
+        public static string GetPathRelativeToCurrentDirectory(params string[] subName)
         {
-            return GetPathRelativeToExecutableCurrentFile(3, subName);
+            return GetPathRelativeToCurrentDirectory(3, subName);
         }
 
-        public static string GetPathRelativeToExecutableCurrentFile(int frameIndex = 2, params string[] subName)
+        private static string GetPathRelativeToCurrentDirectory(int frameIndex = 2, params string[] subName)
         {
             var path = GetDirectoryRelativeToExecutableCurrentFile(frameIndex);
             foreach (var name in subName)
@@ -64,7 +64,7 @@ namespace SKTools.Base.Editor
         /// and search in the full project
         /// </summary>
         /// <returns></returns>
-        public static string GetDirectoryRelativeToExecutableCurrentFile(int frameIndex = 1)
+        private static string GetDirectoryRelativeToExecutableCurrentFile(int frameIndex = 1)
         {
             var stackTrace = new StackTrace(true);
             return new FileInfo(stackTrace.GetFrames()[frameIndex].GetFileName()).DirectoryName;

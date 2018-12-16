@@ -20,9 +20,7 @@ namespace SKTools.Module.CrashReporter
             var container = CustomEditorWindow<Window>.GetWindow(createIfNotExist);
             if (container == null) return;
 
-            var assetsDirectory = Utility.GetPathRelativeToExecutableCurrentFile("Editor Resources");
-            var assets = new Assets(assetsDirectory);
-
+            var assets = new Assets(_assetsDirectory);
             Utility.DiagnosticRun(assets.Load);
 
             _targetGui = new Surrogate<IGUIContainer, Assets>(container, assets);
@@ -37,7 +35,7 @@ namespace SKTools.Module.CrashReporter
         private static void Show(CrashReporterConfig config)
         {
             var instance = GetCrashReporter();
-            instance._config = config;
+            //instance._config = config;
             instance.SetUpWindow(true);
         }
 
@@ -46,9 +44,22 @@ namespace SKTools.Module.CrashReporter
         [MenuItem("SKTools/CrashReporter Throw Exception")]
         private static void ShowWindowMenuItem()
         {
-            throw new Exception("test exception "+ Random.value);
+            throw new Exception("test exception 0.23456");
         }
         
+        [MenuItem("SKTools/CrashReporter Create Config")]
+        private static void CreateConfig()
+        {
+            var config = new CrashReporterConfig();
+            config.Type = LogType.Exception;
+            config.AdditionalInfoToSend = "All logs relative to SKTools";
+            config.MaxCount = 20;
+            config.EmailToSend = "s.khalandachev@gmail.com";
+            config.FileNameLogs = "SKToolsExceptionsLogs.json";
+            config.KeysInStackTrace = "SKTools";
+            config.Save(GetCrashReporter()._assetsDirectory);
+        }
+       
 #endif
         
     }

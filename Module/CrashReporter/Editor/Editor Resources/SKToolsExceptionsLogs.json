@@ -1,0 +1,20 @@
+{
+    "Config": {
+        "Type": 4,
+        "MaxCount": 20,
+        "FileNameLogs": "SKToolsExceptionsLogs",
+        "EmailToSend": "s.khalandachev@gmail.com",
+        "KeysInStackTrace": "SKTools",
+        "AdditionalInfoToSend": "All logs relative to SKTools",
+        "DontShowAgain": false,
+        "Version": 0
+    },
+    "Lines": [
+        {
+            "Condition": "Exception: test exception 0.23456",
+            "Stacktrace": "SKTools.Module.CrashReporter.CrashReporter.ShowWindowMenuItem () (at Assets/SKTools/Module/CrashReporter/Editor/CrashReporter.EntryPoint.cs:47)\n",
+            "type": 4,
+            "Count": 2
+        }
+    ]
+}

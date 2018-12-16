@@ -3,7 +3,7 @@
 namespace SKTools.Module.RateMeWindow
 {
     [System.Serializable]
-    public sealed class RateMeConfig : EditorJsonConfig
+    public sealed class RateMeConfig : EditorJsonAsset
     {
         public byte MinStar = 3;
         public byte MaxStar = 5;

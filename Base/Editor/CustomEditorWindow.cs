@@ -35,7 +35,7 @@ namespace SKTools.Base.Editor
                     return null;
                 }
 
-                window = ScriptableObject.CreateInstance<T>();
+                window = CreateInstance<T>();
             }
             else
             {

@@ -15,12 +15,12 @@ namespace SKTools.Module.CrashReporter
 
         protected override Vector2? GetMinSize
         {
-            get { return new Vector2(600, 400); }
+            get { return new Vector2(450, 350); }
         }
 
         protected override Vector2? GetMaxSize
         {
-            get { return new Vector2(600, 400); }
+            get { return new Vector2(450, 350); }
         }
 
         public Rect Position

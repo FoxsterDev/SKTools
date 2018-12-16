@@ -5,7 +5,42 @@ namespace SKTools.Module.CrashReporter
 {
     internal sealed class Assets : AssetsContainer
     {
-        private GUIStyle _labelStyle, _buttonStyle;
+        private GUIStyle _labelStyle, _labelErrorStyle, _buttonStyle;
+        private GUIContent _boxContent;
+        
+        public GUIContent BoxContent
+        {
+            get
+            {
+                if (_boxContent == null)
+                {
+                    _boxContent = new GUIContent("Pay attention!", null, "I'll be highly appreciate,\nif you send me this exception");
+                }
+
+                return _boxContent;
+            }
+        }
+        
+        public GUIStyle LabelErrorStyle
+        {
+            get
+            {
+                if (_labelErrorStyle == null)
+                {
+                    _labelErrorStyle = new GUIStyle(GUI.skin.label)
+                    {
+                        alignment = TextAnchor.MiddleCenter,
+                        fontStyle = FontStyle.Bold,
+                        fontSize = 16,
+                        wordWrap = true,
+                    
+                    };
+                    _labelErrorStyle.normal.textColor = Color.red;
+                }
+
+                return _labelErrorStyle;
+            }
+        }
         
         public GUIStyle LabelStyle
         {

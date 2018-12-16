@@ -42,7 +42,7 @@ namespace SKTools.Module.RateMeWindow
             _feedbackMessage = Config.FeedbackMessage;
             _starRects = new Rect[Config.MaxStar];
 
-            var assetsDirectory = Utility.GetPathRelativeToExecutableCurrentFile("Editor Resources");
+            var assetsDirectory = Utility.GetPathRelativeToCurrentDirectory("Editor Resources");
             var assets = new Assets(assetsDirectory);
 
             Utility.DiagnosticRun(assets.Load);
@@ -69,7 +69,7 @@ namespace SKTools.Module.RateMeWindow
         [MenuItem("SKTools/Rate Me Save Default Config")]
         private static void SaveConfigMenuItem()
         {
-            new RateMeConfig().Save();
+            //new RateMeConfig().Save();
         }
 
 #endif
