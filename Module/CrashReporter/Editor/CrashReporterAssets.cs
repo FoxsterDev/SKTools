@@ -29,7 +29,7 @@ namespace SKTools.Module.CrashReporter
                 {
                     _labelErrorStyle = new GUIStyle(GUI.skin.label)
                     {
-                        alignment = TextAnchor.MiddleCenter,
+                        alignment = TextAnchor.UpperCenter,
                         fontStyle = FontStyle.Bold,
                         fontSize = 16,
                         wordWrap = true,

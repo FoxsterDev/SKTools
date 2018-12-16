@@ -17,6 +17,9 @@ namespace SKTools.Module.CrashReporter
 
         private void SetUpWindow(bool createIfNotExist)
         {
+            if (Configs == null || Configs.Count < 1)
+                return;
+            
             var container = CustomEditorWindow<Window>.GetWindow(createIfNotExist);
             if (container == null) return;
 
@@ -32,21 +35,19 @@ namespace SKTools.Module.CrashReporter
             }
         }
 
-        private static void Show(CrashReporterConfig config)
+        private static void Show()
         {
-            var instance = GetCrashReporter();
-            //instance._config = config;
-            instance.SetUpWindow(true);
+            GetCrashReporter().SetUpWindow(true);
         }
 
 #if FOXSTER_DEV_MODE
-        
+
         [MenuItem("SKTools/CrashReporter Throw Exception")]
         private static void ShowWindowMenuItem()
         {
             throw new Exception("test exception 0.23456");
         }
-        
+
         [MenuItem("SKTools/CrashReporter Create Config")]
         private static void CreateConfig()
         {
@@ -59,8 +60,7 @@ namespace SKTools.Module.CrashReporter
             config.KeysInStackTrace = "SKTools";
             config.Save(GetCrashReporter()._assetsDirectory);
         }
-       
+
 #endif
-        
     }
 }

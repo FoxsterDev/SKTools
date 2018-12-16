@@ -28,32 +28,20 @@ namespace SKTools.Module.CrashReporter
         {
             public string Condition;
             public string Stacktrace;
-            public LogType type;
+            public LogType Type;
             public ushort Count;
+
+            public override string ToString()
+            {
+                return string.Format(Type + "[Count={0}] Condition={1} \nStacktrace:\n{2}\n\n", Count, Condition, Stacktrace);
+            }
 
             public bool Equals(Line other)
             {
-                return string.Equals(Condition, other.Condition) && string.Equals(Stacktrace, other.Stacktrace) && type == other.type;
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (ReferenceEquals(null, obj)) return false;
-                return obj is Line && Equals((Line) obj);
-            }
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    var hashCode = (Condition != null ? Condition.GetHashCode() : 0);
-                    hashCode = (hashCode * 397) ^ (Stacktrace != null ? Stacktrace.GetHashCode() : 0);
-                    hashCode = (hashCode * 397) ^ (int) type;
-                    hashCode = (hashCode * 397) ^ Count.GetHashCode();
-                    return hashCode;
-                }
+                return other != null && (String.Compare(Condition, other.Condition, StringComparison.Ordinal) == 0 && 
+                                         String.Compare(Stacktrace, other.Stacktrace, StringComparison.Ordinal) == 0 && 
+                                         Type == other.Type);
             }
         }
-
     }
 }

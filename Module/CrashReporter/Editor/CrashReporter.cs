@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SKTools.Base.Editor;
 using UnityEditor;
 using UnityEngine;
@@ -8,12 +9,12 @@ namespace SKTools.Module.CrashReporter
     public partial class CrashReporter
     {
         private Surrogate<IGUIContainer, Assets> _targetGui;
-        //private CrashReportConfig _config;
-        //private string _condition, _stacktrace, _type;
         private List<CrashReporterConfig> _configs;
         private static CrashReporter _instance;
         private string _assetsDirectory;
         private CrashReporterLogs _logs;
+        private Vector2 _scrollPosition = Vector2.zero;
+        private string _result;
         
         private static CrashReporter GetCrashReporter()
         {
@@ -23,6 +24,21 @@ namespace SKTools.Module.CrashReporter
         private CrashReporter()
         {
             _assetsDirectory = Utility.GetPathRelativeToCurrentDirectory("Editor Resources");
+        }
+
+        private CrashReporterLogs Logs
+        {
+            get
+            {
+                if (_logs == null)
+                {
+                    _logs = new CrashReporterLogs(Configs[0].FileNameLogs);
+                    _logs.Config = Configs[0];
+                    _logs.Load(_assetsDirectory);
+                }
+
+                return _logs;
+            }
         }
         
         private List<CrashReporterConfig> Configs
@@ -43,7 +59,7 @@ namespace SKTools.Module.CrashReporter
                         var json = AssetDatabase.LoadAssetAtPath<TextAsset>(assetPath).text;
                         var config  = new CrashReporterConfig(json);
                         _configs.Add(config);
-                        Debug.Log("added:="+ AssetDatabase.GUIDToAssetPath(guid));
+                        //Debug.Log("added:="+ AssetDatabase.GUIDToAssetPath(guid));
                     }
                 }
                 
@@ -54,35 +70,32 @@ namespace SKTools.Module.CrashReporter
 
         private void Application_LogMessageReceived(string condition, string stacktrace, LogType type)
         {
-            if (Configs != null)
+            if (Configs == null || Configs.Count < 1 || Configs[0].DontShowAgain) return;
+            
+            var config = Configs[0];
+            if (type == config.Type && stacktrace.Contains(config.KeysInStackTrace))
             {
-                var config = Configs[0];
-                if (type == config.Type && stacktrace.Contains(config.KeysInStackTrace))
-                {
-                    var line = new CrashReporterLogs.Line
-                        {Condition = condition, Stacktrace = stacktrace, type = type, Count = 1};
-                    if (_logs == null)
-                    {
-                        _logs = new CrashReporterLogs(config.FileNameLogs);
-                        _logs.Config = config;
-                        _logs.Load(_assetsDirectory);
-                    }
-
-                    var l = _logs.Lines.Find(_l => _l.Equals(line));
-                    if (l != null)
-                    {
-                        l.Count += 1;
-                    }
-                    else
-                    {
-                        _logs.Lines.Add(line);
-                    }
+                var line = new CrashReporterLogs.Line
+                    {Condition = condition, Stacktrace = stacktrace, Type = type, Count = 1};
                     
-                    _logs.Save(_assetsDirectory);
+                var l = Logs.Lines.Find(_l => _l.Equals(line));
+                if (l != null)
+                {
+                    l.Count += 1;
                 }
+                else
+                {
+                    Logs.Lines.Insert(0, line);
+                }
+                    
+                Logs.Save(_assetsDirectory);
+                _result = Logs.Lines.Aggregate(Logs.Config.AdditionalInfoToSend+"\n",
+                    (longest, next) => longest + next.ToString());
+               _scrollPosition = Vector2.zero;
+                Show();
             }
         }
-        
+
         private void DrawCrashReporterGui(IGUIContainer window)
         {
             const float buttonWidth = 200;
@@ -93,14 +106,18 @@ namespace SKTools.Module.CrashReporter
             GUI.Label(new Rect(5, 5, position.width, 28), "Something bad happened", _targetGui.Assets.LabelStyle);
 
             var rect = new Rect(5, 40, position.width - 10, position.height - buttonHeight - 40 - 10);
-            GUI.Box(rect, _targetGui.Assets.BoxContent);
-            var label = "";//string.Format("Condition={0}\nStackTrace={1} ", _condition, _stacktrace);
-            GUI.Label(rect,label, _targetGui.Assets.LabelErrorStyle);
+            //GUI.Box(rect, _targetGui.Assets.BoxContent);
+            _scrollPosition = GUI.BeginScrollView(rect, _scrollPosition, new Rect(0, 0, rect.width, 1000), false, true);
 
+            GUI.Label(new Rect(0, 0, rect.width, 1000), _result, _targetGui.Assets.LabelErrorStyle);
+            GUI.EndScrollView();
+            
             if (GUI.Button(new Rect(position.width / 2 - buttonWidth, position.height - buttonHeight, buttonWidth, buttonHeight),
                 "Don't Show Again",
                 _targetGui.Assets.ButtonStyle))
             {
+                Logs.Config.DontShowAgain = true;
+                Logs.Save(_assetsDirectory);
                 window.Close();
                 return;
             }
