@@ -45,7 +45,7 @@ namespace SKTools.Module.CrashReporter
         [MenuItem("SKTools/CrashReporter Throw Exception")]
         private static void ShowWindowMenuItem()
         {
-            throw new Exception("test exception 0.23456");
+            throw new Exception("test exception 0.23456"+Random.value);
         }
 
         [MenuItem("SKTools/CrashReporter Create Config")]

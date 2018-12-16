@@ -1,6 +1,6 @@
 {
     "Type": 4,
-    "MaxCount": 20,
+    "MaxCount": 8,
     "FileNameLogs": "SKToolsExceptionsLogs",
     "EmailToSend": "s.khalandachev@gmail.com",
     "KeysInStackTrace": "SKTools",

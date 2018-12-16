@@ -1,7 +1,7 @@
 {
     "Config": {
         "Type": 4,
-        "MaxCount": 20,
+        "MaxCount": 12,
         "FileNameLogs": "SKToolsExceptionsLogs",
         "EmailToSend": "s.khalandachev@gmail.com",
         "KeysInStackTrace": "SKTools",
@@ -9,5 +9,24 @@
         "DontShowAgain": false,
         "Version": 0
     },
-    "Lines": []
+    "Lines": [
+        {
+            "Condition": "Exception: test exception 0.234560.9911617",
+            "Stacktrace": "SKTools.Module.CrashReporter.CrashReporter.ShowWindowMenuItem () (at Assets/SKTools/Module/CrashReporter/Editor/CrashReporter.EntryPoint.cs:48)\n",
+            "Type": 4,
+            "Count": 1
+        },
+        {
+            "Condition": "Exception: test exception 0.234560.7600759",
+            "Stacktrace": "SKTools.Module.CrashReporter.CrashReporter.ShowWindowMenuItem () (at Assets/SKTools/Module/CrashReporter/Editor/CrashReporter.EntryPoint.cs:48)\n",
+            "Type": 4,
+            "Count": 1
+        },
+        {
+            "Condition": "Exception: test exception 0.234560.3265542",
+            "Stacktrace": "SKTools.Module.CrashReporter.CrashReporter.ShowWindowMenuItem () (at Assets/SKTools/Module/CrashReporter/Editor/CrashReporter.EntryPoint.cs:48)\n",
+            "Type": 4,
+            "Count": 1
+        }
+    ]
 }

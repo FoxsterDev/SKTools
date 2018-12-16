@@ -34,8 +34,8 @@ namespace SKTools.Module.CrashReporter
                 if (_logs == null)
                 {
                     _logs = new CrashReporterLogs(Configs[0].FileNameLogs);
-                    _logs.Config = Configs[0];
                     _logs.Load(_assetsDirectory);
+                    _logs.Config = Configs[0];
                 }
 
                 return _logs;
@@ -86,11 +86,16 @@ namespace SKTools.Module.CrashReporter
                 }
                 else
                 {
+                    while (Logs.Lines.Count >= config.MaxCount)
+                    {
+                        Logs.Lines.RemoveAt(Logs.Lines.Count - 1);
+                    }
                     Logs.Lines.Insert(0, line);
                 }
                     
                 Logs.Save(_assetsDirectory);
-                _result = Logs.Lines.Aggregate(Logs.Config.AdditionalInfoToSend+"\n",
+                
+                _result = Logs.Lines.Aggregate(config.AdditionalInfoToSend+"\n",
                     (longest, next) => longest + next.ToString());
                _scrollPosition = Vector2.zero;
                 Show();
