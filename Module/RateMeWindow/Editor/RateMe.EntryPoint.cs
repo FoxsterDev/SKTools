@@ -1,5 +1,5 @@
 ﻿using System;
-using SKTools.Base.Editor;
+using SKTools.Core.Editor;
 using UnityEditor;
 using UnityEngine;
 
@@ -37,7 +37,7 @@ namespace SKTools.Module.RateMeWindow
 
         private void SetUpWindow(bool createIfNotExist)
         {
-            var container = CustomEditorWindow<Window>.GetWindow(createIfNotExist);
+            var container = CustomEditorWindow<Configuration>.GetWindow(createIfNotExist);
             if (container == null) return;
 
             _feedbackMessage = Config.FeedbackMessage;

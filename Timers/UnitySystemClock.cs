@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
-namespace SKTools.Base
+namespace SKTools.Core
 {
     #region Timer
 

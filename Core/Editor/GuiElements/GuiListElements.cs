@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SKTools.Base.Editor.GuiElementsSystem
+namespace SKTools.Core.Editor.GuiElementsSystem
 {
     public class GuiListElements : IGuiElement
     {

@@ -7,8 +7,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using UnityEditor;
-using Timer = SKTools.Base.Timer;
-namespace SKTools.Base.Tests
+using Timer = SKTools.Core.Timer;
+namespace SKTools.Core.Tests
 {
     public class UnitySystemClockTest
     {

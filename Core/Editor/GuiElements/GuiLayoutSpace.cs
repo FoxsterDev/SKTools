@@ -1,14 +1,21 @@
 ﻿using UnityEngine;
 
-namespace SKTools.Base.Editor.GuiElementsSystem
+namespace SKTools.Core.Editor.GuiElementsSystem
 {
-    public class GuiLayoutFlexibleSpace : IGuiElement
+    public class GuiLayoutSpace : IGuiElement
     {
+        private float _pixels;
+
         public string Id { get; private set; }
+
+        public GuiLayoutSpace(float pixels)
+        {
+            _pixels = pixels;
+        }
 
         public void Draw()
         {
-            GUILayout.FlexibleSpace();
+            GUILayout.Space(_pixels);
         }
 
         public T GetChild<T>(string id) where T : IGuiElement

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace SKTools.Base.Editor.GuiElementsSystem
+namespace SKTools.Core.Editor.GuiElementsSystem
 {
     public class GuiLayoutToggle : IGuiElement
     {

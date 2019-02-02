@@ -1,5 +1,5 @@
 ﻿using System;
-using SKTools.Base.Editor;
+using SKTools.Core.Editor;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -20,7 +20,7 @@ namespace SKTools.Module.CrashReporter
             if (Configs == null || Configs.Count < 1)
                 return;
             
-            var container = CustomEditorWindow<Window>.GetWindow(createIfNotExist);
+            var container = CustomEditorWindow<Configuration>.GetWindow(createIfNotExist);
             if (container == null) return;
 
             var assets = new Assets(_assetsDirectory);

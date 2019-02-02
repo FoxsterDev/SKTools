@@ -1,4 +1,4 @@
-﻿using SKTools.Base.Editor;
+﻿using SKTools.Core.Editor;
 
 namespace SKTools.Module.RateMeWindow
 {

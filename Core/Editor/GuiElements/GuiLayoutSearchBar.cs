@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace SKTools.Base.Editor.GuiElementsSystem
+namespace SKTools.Core.Editor.GuiElementsSystem
 {
     public class GuiLayoutSearchBar : IGuiElement
     {

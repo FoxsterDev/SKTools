@@ -1,26 +1,26 @@
-﻿using SKTools.Base.Editor;
+﻿using SKTools.Core.Editor;
 using UnityEngine;
 
-namespace SKTools.Module.RateMeWindow
+namespace SKTools.Module.CrashReporter
 {
     /// <summary>
     /// This window will show rate me window
     /// </summary>
-    internal class Window : CustomEditorWindow<Window>, IGUIContainer
+    internal sealed class Configuration : CustomEditorWindow<Configuration>, IGUIContainer
     {
         protected override GUIContent GetTitleContent
         {
-            get { return new GUIContent("Rate Me"); }
+            get { return new GUIContent("Crash Reporter"); }
         }
 
         protected override Vector2? GetMinSize
         {
-            get { return new Vector2(400, 400); }
+            get { return new Vector2(450, 350); }
         }
 
         protected override Vector2? GetMaxSize
         {
-            get { return new Vector2(400, 400); }
+            get { return new Vector2(450, 350); }
         }
 
         public Rect Position

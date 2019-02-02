@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace SKTools.Base.Editor
+namespace SKTools.Core.Editor
 {
     public class Utility
     {
@@ -16,6 +16,7 @@ namespace SKTools.Base.Editor
         {
 #if !FOXSTER_DEV_MODE
             method();
+            return;
 #else
             var watch = new Stopwatch();
             watch.Start();

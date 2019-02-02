@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using SKTools.Base.Editor;
+using SKTools.Core.Editor;
 using UnityEngine;
 
 namespace SKTools.Module.RateMeWindow

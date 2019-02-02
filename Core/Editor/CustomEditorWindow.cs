@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace SKTools.Base.Editor
+namespace SKTools.Core.Editor
 {
     public abstract class CustomEditorWindow<T> : EditorWindow where T : EditorWindow, IGUIContainer
     {
@@ -9,6 +9,7 @@ namespace SKTools.Base.Editor
         public GUIDelegate<IGUIContainer> LostFocusCallback { get; set; }
         public GUIDelegate<IGUIContainer> FocusCallback { get; set; }
         public GUIDelegate<IGUIContainer> CloseCallback { get; set; }
+
 
         private static bool IsCreated
         {
@@ -19,8 +20,8 @@ namespace SKTools.Base.Editor
         /// <summary>
         /// I added this method because want to preconfigurate the window and fast detect existing editor window common state with isCreated
         /// <param name="createIfNotExist">In some cases I need to check of exisiting already an opened window</param>
-        /// <typeparam name="T">Some type of editor window</typeparam>
         /// <returns>Return a gui container of type T</returns>
+        /// </summary>
         public static IGUIContainer GetWindow(bool createIfNotExist = false)
         {
             if (!createIfNotExist && !IsCreated) return null;
