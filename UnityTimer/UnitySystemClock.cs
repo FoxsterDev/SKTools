@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -8,32 +7,6 @@ namespace SKTools.Core
 {
     #region Timer
 
-    /// <summary>
-    /// Generates an event after a set interval, with an option to generate recurring events
-    /// Example of usage
-    /*[RequireComponent(typeof(Text))]
-    public class TimerExample : MonoBehaviour
-    {
-        [SerializeField] private uint _seconds = 60;
-        private Timer _timer;
-    
-        void Start ()
-        {
-            var label = GetComponent<Text>();
-            _timer = new Timer(1000);
-            _timer.OnIntervalElapsed += delegate(TimeSpan span)
-            {
-                label.text = (Mathf.CeilToInt((float)_timer.RemainingTime.TotalSeconds)).ToString();
-            };
-            _timer.StartWithSeconds(_seconds);
-        }
-        
-        //dont forget to dispose it
-        void OnDestroy()
-        {
-            ((IDisposable)_timer).Dispose();
-        }
-    }*/
     /// </summary>
     public sealed class Timer : UnitySystemClock
     {
