@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace SKTools.Core.Invoker
 {
-    public class SystemInvokeException<T> : Exception where T : class , new()
+    public class SystemInvokeException<T> : Exception where T : class, new()
     {
         private static T _ex;
 
@@ -12,19 +12,45 @@ namespace SKTools.Core.Invoker
             get { return _ex ?? (_ex = new T()); }
         }
 
-        public static void Print()
+        public static void ToLog()
         {
-            Debug.LogException((Exception)(object)Exception);
+            Debug.LogException((Exception) (object) Exception);
         }
     }
-    
-    public class CantResetBecauseArgumentCannotBeNullException : SystemInvokeException<CantResetBecauseArgumentCannotBeNullException>{ }
-    public class UnitySynchronizationContextIsNullException : SystemInvokeException<UnitySynchronizationContextIsNullException>{}
-    public class CantStartBecauseTimerCallbackIsNullException : SystemInvokeException<CantStartBecauseTimerCallbackIsNullException>{}
-    public class CantStartBecauseTheCallbackAlreadyUsedException : SystemInvokeException<CantStartBecauseTheCallbackAlreadyUsedException>{}
-    public class CantResetBecauseNotExistCallbackException : SystemInvokeException<CantResetBecauseNotExistCallbackException>{}
-    public class CantStartBecauseNullContextException : SystemInvokeException<CantStartBecauseNullContextException>{}
-    public class CantResetBecauseNotUnityContextException : SystemInvokeException<CantResetBecauseNotUnityContextException>{}
-    public class CantStartBecauseNotUnityContextException : SystemInvokeException<CantStartBecauseNotUnityContextException>{}
-    public class CantStartBecauseInValidKeyException : SystemInvokeException<CantStartBecauseInValidKeyException>{}
+
+    public class CantResetBecauseArgumentCannotBeNullException : SystemInvokeException<CantResetBecauseArgumentCannotBeNullException>
+    {
+    }
+
+    public class UnitySynchronizationContextIsNullException : SystemInvokeException<UnitySynchronizationContextIsNullException>
+    {
+    }
+
+    public class CantStartBecauseTimerCallbackIsNullException : SystemInvokeException<CantStartBecauseTimerCallbackIsNullException>
+    {
+    }
+
+    public class CantStartBecauseCallbackAlreadyAddedException : SystemInvokeException<CantStartBecauseCallbackAlreadyAddedException>
+    {
+    }
+
+    public class CantCancelBecauseNotExistCallbackException : SystemInvokeException<CantCancelBecauseNotExistCallbackException>
+    {
+    }
+
+    public class CantStartBecauseNullContextException : SystemInvokeException<CantStartBecauseNullContextException>
+    {
+    }
+
+    public class CantResetBecauseNotStartedContextException : SystemInvokeException<CantResetBecauseNotStartedContextException>
+    {
+    }
+
+    public class CantStartBecauseNotStartedContextException : SystemInvokeException<CantStartBecauseNotStartedContextException>
+    {
+    }
+
+    public class CantStartBecauseInValidKeyException : SystemInvokeException<CantStartBecauseInValidKeyException>
+    {
+    }
 }
