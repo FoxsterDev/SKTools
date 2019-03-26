@@ -18,7 +18,7 @@ namespace SKTools.Core.Invoker
         }
     }
 
-    public class CantResetBecauseArgumentCannotBeNullException : SystemInvokeException<CantResetBecauseArgumentCannotBeNullException>
+    public class CantResetBecauseCallbackCannotBeNullException : SystemInvokeException<CantResetBecauseCallbackCannotBeNullException>
     {
     }
 
@@ -26,11 +26,11 @@ namespace SKTools.Core.Invoker
     {
     }
 
-    public class CantStartBecauseTimerCallbackIsNullException : SystemInvokeException<CantStartBecauseTimerCallbackIsNullException>
+    public class CantStartBecauseCallbackCannotBeNullException : SystemInvokeException<CantStartBecauseCallbackCannotBeNullException>
     {
     }
 
-    public class CantStartBecauseCallbackAlreadyAddedException : SystemInvokeException<CantStartBecauseCallbackAlreadyAddedException>
+    public class CantStartBecauseCallbackExistedException : SystemInvokeException<CantStartBecauseCallbackExistedException>
     {
     }
 

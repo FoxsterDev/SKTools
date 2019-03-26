@@ -1,18 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using UnityEngine;
 
-/*
- *  unity invoking 
- *
- *CancelInvoke	Cancels all Invoke calls on this MonoBehaviour.
-Invoke	Invokes the method methodName in time seconds.
-InvokeRepeating	Invokes the method methodName in time seconds, then repeatedly every repeatRate seconds.
-IsInvoking
- *
- * 
- */
 namespace SKTools.Core.Invoker
 {
     public delegate void TimeDelegate(Moment value);
@@ -23,10 +12,7 @@ namespace SKTools.Core.Invoker
         {
             public TimeDelegate Callback;
             public uint RepeatMs;
-
             public DateTime StartTime;
-
-            //public DateTime NowTime;
             public DateTime CallTime;
             public int HashCode;
             public bool Repeating;
@@ -50,6 +36,21 @@ namespace SKTools.Core.Invoker
         public static bool IsInvoking(TimeDelegate callback)
         {
             return FindIndexBucket(callback) > -1;
+        }
+
+        public static void CancelInvoke(TimeDelegate callback)
+        {
+            var index = -1;
+
+            if (CanCancel(callback, ref index))
+            {
+                _buckets.RemoveAt(index);
+
+                if (_buckets.Count < 1)
+                {
+                    Clear();
+                }
+            }
         }
 
         /// <summary>
@@ -185,30 +186,6 @@ namespace SKTools.Core.Invoker
             }
         }
 
-        private static int FindIndexBucket(TimeDelegate callback)
-        {
-            var hashCode = callback.GetHashCode();
-
-            return _buckets != null
-                       ? _buckets.FindIndex(t => t.HashCode == hashCode)
-                       : -1;
-        }
-
-        public static void CancelInvoke(TimeDelegate callback)
-        {
-            var index = -1;
-
-            if (CanCancel(callback, ref index))
-            {
-                _buckets.RemoveAt(index);
-
-                if (_buckets.Count < 1)
-                {
-                    Clear();
-                }
-            }
-        }
-
         private static void Clear()
         {
             _systemThreadingTimerState = null;
@@ -229,7 +206,7 @@ namespace SKTools.Core.Invoker
         {
             if (callback == null)
             {
-                CantStartBecauseTimerCallbackIsNullException.ToLog();
+                CantStartBecauseCallbackCannotBeNullException.ToLog();
                 return false;
             }
 
@@ -245,14 +222,14 @@ namespace SKTools.Core.Invoker
                 return false;
             }
 
-            var hash = callback.GetHashCode();
-            if (_buckets != null && _buckets.Find(t => t.HashCode == hash) != null)
+            var index = FindIndexBucket(callback);
+            if (index > -1)
             {
-                CantStartBecauseCallbackAlreadyAddedException.ToLog();
+                CantStartBecauseCallbackExistedException.ToLog();
                 return false;
             }
 
-            hashCode = hash;
+            hashCode = callback.GetHashCode();
 
             return true;
         }
@@ -261,7 +238,7 @@ namespace SKTools.Core.Invoker
         {
             if (callback == null)
             {
-                CantResetBecauseArgumentCannotBeNullException.ToLog();
+                CantResetBecauseCallbackCannotBeNullException.ToLog();
                 return false;
             }
 
@@ -280,6 +257,15 @@ namespace SKTools.Core.Invoker
             }
 
             return true;
+        }
+
+        private static int FindIndexBucket(TimeDelegate callback)
+        {
+            var hashCode = callback.GetHashCode();
+
+            return _buckets != null
+                       ? _buckets.FindIndex(t => t.HashCode == hashCode)
+                       : -1;
         }
     }
 }
