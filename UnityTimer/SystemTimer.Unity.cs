@@ -2,7 +2,7 @@ using System.Threading;
 
 namespace SKTools.Core.Invoker
 {
-    public static partial class SystemInvoker
+    public static partial class SystemTimer
     {
         [UnityEngine.RuntimeInitializeOnLoadMethod(UnityEngine.RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Initialization()

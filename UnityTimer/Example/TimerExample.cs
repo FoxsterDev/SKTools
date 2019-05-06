@@ -13,7 +13,15 @@ namespace SKTools.Core
         private void Start()
         {
             var label = GetComponent<Text>();
-            SystemInvoker.InvokeRepeating(null,  0,1000);
+            //SystemInvoker.InvokeRepeating((moment) => { label.text = moment.Passed.TotalSeconds.ToString();},  0,1000);
+            Debug.Log(Time.realtimeSinceStartup);
+            
+            SystemTimer.Invoke(
+                (moment) =>
+                {
+                    label.text = moment.Passed.TotalSeconds.ToString();
+                    Debug.Log("!!!" + Time.realtimeSinceStartup);
+                }, 5000);
         }
     }
 }
