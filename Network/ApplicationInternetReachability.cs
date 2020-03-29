@@ -7,7 +7,7 @@ namespace SKTools.Network
     public class ApplicationInternetReachability : MonoBehaviour
     {
         private readonly NetworkConnectionChecker _networkConnectionChecker = 
-            new NetworkConnectionChecker("api.boardkingsgame.com", TimeSpan.FromMilliseconds(30000));
+            new NetworkConnectionChecker("google.com", TimeSpan.FromMilliseconds(30000));
 
         private async void Start()
         {
