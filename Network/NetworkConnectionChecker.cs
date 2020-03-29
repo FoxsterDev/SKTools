@@ -120,15 +120,16 @@ namespace SKTools.Network
                     //Blocks the current thread until the current WaitHandle receives a signal.
                     var success = result.AsyncWaitHandle.WaitOne(5000, true);
 
-                    if (token.IsCancellationRequested)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        return false;
-                    }
-
-                    if (tempSocket.Connected)
+                    if (success)
                     {
                         tempSocket.EndConnect(result);
+
+                        if (token.IsCancellationRequested)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            return false;
+                        }
+
                         return true;
                     }
                     else
