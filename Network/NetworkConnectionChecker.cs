@@ -75,19 +75,19 @@ namespace SKTools.Network
             }
             catch (ArgumentNullException e)
             {
-                UnityEngine.Debug.LogError(nameof(NetworkConnectionChecker) + " HostNameOrAddress is null");
+                UnityEngine.Debug.LogError(nameof(NetworkConnectionChecker) + " hostNameOrAddress is null");
                 time.Stop();
                 return new Tuple<NetworkState, long, Exception>(NetworkState.Undefined, time.ElapsedMilliseconds, e);
             }
             catch (ArgumentException e)
             {
-                UnityEngine.Debug.LogError(nameof(NetworkConnectionChecker) + " NetworkConnectionChecker HostNameOrAddress is an invalid IP address.");
+                UnityEngine.Debug.LogError(nameof(NetworkConnectionChecker) + " hostNameOrAddress is an invalid IP address.");
                 time.Stop();
                 return new Tuple<NetworkState, long, Exception>(NetworkState.Undefined, time.ElapsedMilliseconds, e);
             }
             catch (Exception e)
             {
-                UnityEngine.Debug.LogError(nameof(NetworkConnectionChecker) + " NetworkConnectionChecker Unknown Exception  " + e.Message);
+                UnityEngine.Debug.LogError(nameof(NetworkConnectionChecker) + " unknown Exception  " + e.Message);
                 time.Stop();
                 return new Tuple<NetworkState, long, Exception>(NetworkState.Undefined, time.ElapsedMilliseconds, e);
             }
