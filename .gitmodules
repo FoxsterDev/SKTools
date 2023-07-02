@@ -1,9 +1,0 @@
-[submodule "ScriptingDefineManager"]
-	path = ScriptingDefineManager
-	url = ../SKTools.ScriptingDefineManager.git
-[submodule "EditorCoroutine"]
-	path = EditorCoroutine
-	url = ../SKTools.EditorCoroutine.git
-[submodule "MenuItemsFinder"]
-	path = MenuItemsFinder
-	url = ../SKTools.MenuItemsFinder.git
