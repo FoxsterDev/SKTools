@@ -1,4 +1,4 @@
-﻿namespace SKTools.Core.Editor.GuiElementsSystem
+﻿namespace SKTools.Editor.GuiElementsSystem
 {
     public interface IGuiElement
     {

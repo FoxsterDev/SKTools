@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Text;
-using SKTools.Core.Editor;
+using SKTools.Editor;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace SKTools.Module.RateMeWindow
+namespace SKTools.Editor.Windows.RateMe
 {
     public partial class RateMe
     {

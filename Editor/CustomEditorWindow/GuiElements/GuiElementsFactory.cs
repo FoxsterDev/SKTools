@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace SKTools.Core.Editor.GuiElementsSystem
+namespace SKTools.Editor.GuiElementsSystem
 {
     public static class GuiElementsFactory
     {

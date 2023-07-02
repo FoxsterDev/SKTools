@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace SKTools.Core.Editor.GuiElementsSystem
+namespace SKTools.Editor.GuiElementsSystem
 {
     public class GuiLayoutButton : IGuiElement
     {

@@ -1,4 +1,4 @@
-﻿namespace SKTools.Core.Editor
+﻿namespace SKTools.Editor
 {
     public class Surrogate<T, K>
         where T : IGUIContainer

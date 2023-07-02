@@ -1,9 +1,8 @@
 ﻿using System;
-using SKTools.Core.Editor;
 using UnityEditor;
 using UnityEngine;
 
-namespace SKTools.Module.RateMeWindow
+namespace SKTools.Editor.Windows.RateMe
 {
     public partial class RateMe
     {
@@ -61,19 +60,19 @@ namespace SKTools.Module.RateMeWindow
         }
 
 #if FOXSTER_DEV_MODE
-        [MenuItem("SKTools/Rate Me Test")]
+        [MenuItem("SKTools/DevMode/Rate Me Test")]
         private static void ShowWindowMenuItem()
         {
             Show(null);
         }
 
-        [MenuItem("SKTools/Rate Me Save Default Config")]
+        [MenuItem("SKTools/DevMode/Rate Me Save Default Config")]
         private static void SaveConfigMenuItem()
         {
             //new RateMeConfig().Save();
         }
         
-        [MenuItem("SKTools/Rate Me TestException")]
+        [MenuItem("SKTools/DevMode/Rate Me TestException")]
         private static void TestException()
         {
            throw new Exception("nsnansmnnmn");

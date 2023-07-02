@@ -1,4 +1,4 @@
-﻿namespace SKTools.Core.Editor
+﻿namespace SKTools.Editor
 {
     public interface IAssetsContainer
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SKTools.ScriptsExtensions
+namespace SKTools.EditorExtensions
 {
     /// <summary>
     ///     This script helps to stylize strings in Unity 3.x and above.

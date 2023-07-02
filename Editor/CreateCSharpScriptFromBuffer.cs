@@ -5,7 +5,7 @@ using System.Text;
 using UnityEditor;
 using UnityEngine;
 
-namespace SKTools.Scripts
+namespace SKTools.Editor
 {
     public static class CreateCSharpScriptFromBuffer
     {
@@ -50,16 +50,21 @@ namespace SKTools.Scripts
                     if (index1 > -1)
                     {
                         index1 += "class".Length;
+                        
                         var index2 = content.IndexOf('{', 0);
                         if (index2 > -1)
                         {
                             var index3 = content.IndexOf(':', index1);
                             if (index3 > -1 && index3 < index2) index2 = index3;
                             fileName = content.Substring(index1, index2 - index1);
+                            
                             var invalidChars = Path.GetInvalidFileNameChars().Concat(new[] {' ', '\n'}).ToArray();
                             fileName = string.Join(string.Empty, fileName.Split(invalidChars));
                         }
                     }
+                    
+                    //clean 
+                    fileName = fileName.Replace("<T>", "");
                 }
                 catch
                 {

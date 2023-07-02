@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SKTools.Core.Editor
+namespace SKTools.Editor
 {
     public delegate void GUIDelegate<T>(T obj);
 

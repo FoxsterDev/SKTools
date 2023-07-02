@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using SKTools.Core.Editor;
+using SKTools.Editor;
 using UnityEngine;
 
-namespace SKTools.Module.CrashReporter
+namespace SKTools.Editor.Windows.CrashReporter
 {
     [System.Serializable]
     public class CrashReporterLogs : EditorJsonAsset

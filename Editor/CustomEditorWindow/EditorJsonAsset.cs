@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace SKTools.Core.Editor
+namespace SKTools.Editor
 {
     [System.Serializable]
     public abstract class EditorJsonAsset

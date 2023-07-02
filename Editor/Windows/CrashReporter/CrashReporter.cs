@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SKTools.Core.Editor;
+using SKTools.Editor;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
-using Utility = SKTools.Core.Editor.Utility;
+using Utility = SKTools.Editor.Utility;
 
-namespace SKTools.Module.CrashReporter
+namespace SKTools.Editor.Windows.CrashReporter
 {
     public partial class CrashReporter
     {

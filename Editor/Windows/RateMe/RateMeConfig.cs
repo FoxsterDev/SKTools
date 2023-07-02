@@ -1,6 +1,6 @@
-﻿using SKTools.Core.Editor;
+﻿using SKTools.Editor;
 
-namespace SKTools.Module.RateMeWindow
+namespace SKTools.Editor.Windows.RateMe
 {
     [System.Serializable]
     public sealed class RateMeConfig : EditorJsonAsset

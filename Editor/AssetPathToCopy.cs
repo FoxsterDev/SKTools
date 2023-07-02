@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace SKTools.Scripts
+namespace SKTools.Editor
 {
     public static class AssetPathToCopy
     {

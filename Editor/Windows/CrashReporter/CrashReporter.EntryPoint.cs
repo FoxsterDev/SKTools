@@ -1,10 +1,10 @@
 ﻿using System;
-using SKTools.Core.Editor;
+using SKTools.Editor;
 using UnityEditor;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-namespace SKTools.Module.CrashReporter
+namespace SKTools.Editor.Windows.CrashReporter
 {
     public partial class CrashReporter
     {
@@ -42,13 +42,13 @@ namespace SKTools.Module.CrashReporter
 
 #if FOXSTER_DEV_MODE
 
-        [MenuItem("SKTools/CrashReporter Throw Exception")]
+        [MenuItem("SKTools/DevMode/CrashReporter Throw Exception")]
         private static void ShowWindowMenuItem()
         {
             throw new Exception("test exception 0.23456"+Random.value);
         }
 
-        [MenuItem("SKTools/CrashReporter Create Config")]
+        [MenuItem("SKTools/DevMode/CrashReporter Create Config")]
         private static void CreateConfig()
         {
             var config = new CrashReporterConfig();

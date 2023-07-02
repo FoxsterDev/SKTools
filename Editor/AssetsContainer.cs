@@ -6,7 +6,7 @@ using UnityEngine;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 
-namespace SKTools.Core.Editor
+namespace SKTools.Editor
 {
     public class AssetsContainer : IAssetsContainer
     {

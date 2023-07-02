@@ -1,7 +1,7 @@
-﻿using SKTools.Core.Editor;
+﻿using SKTools.Editor;
 using UnityEngine;
 
-namespace SKTools.Module.CrashReporter
+namespace SKTools.Editor.Windows.CrashReporter
 {
     internal sealed class Assets : AssetsContainer
     {

@@ -1,7 +1,7 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace SKTools.Core.Editor
+namespace SKTools.Editor
 {
     public abstract class CustomEditorWindow<T> : EditorWindow where T : EditorWindow, IGUIContainer
     {

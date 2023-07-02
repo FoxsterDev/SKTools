@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace SKTools.Core.Editor
+namespace SKTools.Editor
 {
     public class Utility
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace SKTools.ScriptsExtensions
+namespace SKTools.EditorExtensions
 {
     public static class TransformExt
     {

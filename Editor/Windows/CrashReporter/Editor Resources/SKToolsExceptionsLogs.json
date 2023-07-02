@@ -1,0 +1,13 @@
+{
+    "Config": {
+        "Type": 4,
+        "MaxCount": 8,
+        "FileNameLogs": "SKToolsExceptionsLogs",
+        "EmailToSend": "s.khalandachev@gmail.com",
+        "KeysInStackTrace": "SKTools",
+        "AdditionalInfoToSend": "All logs relative to SKTools",
+        "DontShowAgain": false,
+        "Version": 0
+    },
+    "Lines": []
+}

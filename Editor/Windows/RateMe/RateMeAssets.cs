@@ -1,7 +1,7 @@
-﻿using SKTools.Core.Editor;
+﻿using SKTools.Editor;
 using UnityEngine;
 
-namespace SKTools.Module.RateMeWindow
+namespace SKTools.Editor.Windows.RateMe
 {
     internal sealed class Assets : AssetsContainer
     {
