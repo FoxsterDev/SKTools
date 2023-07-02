@@ -4,6 +4,8 @@ using System.Text;
 using SKTools.Core.Editor;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Networking;
+using Utility = SKTools.Core.Editor.Utility;
 
 namespace SKTools.Module.CrashReporter
 {
@@ -154,7 +156,7 @@ namespace SKTools.Module.CrashReporter
 
         private string EscapeURL(string url)
         {
-            return WWW.EscapeURL(url).Replace("+", "%20");
+            return UnityWebRequest.EscapeURL(url).Replace("+", "%20");
         }
     }
 }

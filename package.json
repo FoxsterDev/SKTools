@@ -1,0 +1,15 @@
+{
+  "name": "com.foxsterdev.sktools",
+  "displayName": "SKTools",
+  "version": "0.0.2",
+  "unity": "2020.3",
+  "description": "Collection of useful components for Unity projects",
+  "keywords": ["Unity Editor", "Unity Tools", "Unity Utils"],
+  "license": "MIT",
+  "documentationUrl": "https://github.com/FoxsterDev/SKTools",
+  "changelogUrl": "https://github.com/FoxsterDev/SKTools/releases",
+  "licensesUrl": "https://github.com/FoxsterDev/SKTools/blob/main/LICENSE",
+  "dependencies": {
+    
+  }
+}

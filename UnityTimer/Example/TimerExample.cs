@@ -21,7 +21,7 @@ namespace SKTools.Core
                 {
                     label.text = moment.Passed.TotalSeconds.ToString();
                     Debug.Log("!!!" + Time.realtimeSinceStartup);
-                }, 5000);
+                }, _seconds);
         }
     }
 }

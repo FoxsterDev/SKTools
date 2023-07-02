@@ -1,6 +1,8 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using SKTools.Core.Editor;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace SKTools.Module.RateMeWindow
 {
@@ -50,7 +52,7 @@ namespace SKTools.Module.RateMeWindow
 
         private string EscapeURL(string url)
         {
-            return WWW.EscapeURL(url).Replace("+", "%20");
+            return UnityWebRequest.EscapeURL(url).Replace("+", "%20");
         }
     }
 }

@@ -1,7 +1,7 @@
 {
     "Config": {
         "Type": 4,
-        "MaxCount": 12,
+        "MaxCount": 8,
         "FileNameLogs": "SKToolsExceptionsLogs",
         "EmailToSend": "s.khalandachev@gmail.com",
         "KeysInStackTrace": "SKTools",
@@ -10,6 +10,12 @@
         "Version": 0
     },
     "Lines": [
+        {
+            "Condition": "DirectoryNotFoundException: Could not find a part of the path \"/Users/sergeykha/Projects/Sandbox/SKUnityPackages/Assets/Assets/ProgramChild1.cs\".",
+            "Stacktrace": "System.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.Boolean anonymous, System.IO.FileOptions options) (at <695d1cc93cca45069c528c15c9fdd749>:0)\nSystem.IO.FileStream..ctor (System.String path, System.IO.FileMode mode, System.IO.FileAccess access, System.IO.FileShare share, System.Int32 bufferSize, System.IO.FileOptions options, System.String msgPath, System.Boolean bFromProxy, System.Boolean useLongPath, System.Boolean checkHost) (at <695d1cc93cca45069c528c15c9fdd749>:0)\n(wrapper remoting-invoke-with-check) System.IO.FileStream..ctor(string,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare,int,System.IO.FileOptions,string,bool,bool,bool)\nSystem.IO.StreamWriter.CreateFile (System.String path, System.Boolean append, System.Boolean checkHost) (at <695d1cc93cca45069c528c15c9fdd749>:0)\nSystem.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize, System.Boolean checkHost) (at <695d1cc93cca45069c528c15c9fdd749>:0)\nSystem.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding, System.Int32 bufferSize) (at <695d1cc93cca45069c528c15c9fdd749>:0)\nSystem.IO.StreamWriter..ctor (System.String path, System.Boolean append, System.Text.Encoding encoding) (at <695d1cc93cca45069c528c15c9fdd749>:0)\n(wrapper remoting-invoke-with-check) System.IO.StreamWriter..ctor(string,bool,System.Text.Encoding)\nSystem.IO.File.WriteAllText (System.String path, System.String contents, System.Text.Encoding encoding) (at <695d1cc93cca45069c528c15c9fdd749>:0)\nSKTools.Scripts.CreateCSharpScriptFromBuffer.ScriptFromBuffer () (at Assets/SKTools/Editor/CreateCSharpScriptFromBuffer.cs:32)\n",
+            "Type": 4,
+            "Count": 1
+        },
         {
             "Condition": "Exception: test exception 0.234560.9911617",
             "Stacktrace": "SKTools.Module.CrashReporter.CrashReporter.ShowWindowMenuItem () (at Assets/SKTools/Module/CrashReporter/Editor/CrashReporter.EntryPoint.cs:48)\n",
