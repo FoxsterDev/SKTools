@@ -1,7 +1,7 @@
 {
   "name": "com.foxsterdev.sktools",
   "displayName": "SKTools",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "unity": "2020.3",
   "description": "Collection of useful components for Unity projects",
   "keywords": ["Unity Editor", "Unity Tools", "Unity Utils"],
