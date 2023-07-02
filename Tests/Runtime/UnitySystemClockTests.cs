@@ -8,9 +8,11 @@ using System.Linq;
 using System.Threading;
 using UnityEditor;
 using Timer = SKTools.Core.Timer;
-namespace SKTools.Core.Tests
+
+namespace SKTools.Tests
 {
-    public class UnitySystemClockTest
+    [Category("SKTools Tests")]
+    internal class UnitySystemClockTests
     {
         [UnityTest]
         [Timeout(10 * 1000)]
