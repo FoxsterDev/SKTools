@@ -1,10 +1,10 @@
 {
-    "MinStar": 3,
+    "MinStar": 4,
     "MaxStar": 5,
     "RequestLabel": "How do you like it?",
     "RateButtonText": "Rate",
-    "RateMainUrl": "https://assetstore.unity.com/packages/tools/utilities/monkey-editor-commands-productivity-booster-119938",
-    "RateMainButtonText": "Rate me on AssetStore",
+    "RateMainUrl": "https://www.google.com/",
+    "RateMainButtonText": "Please give me a star",
     "RateOptionalUrl": "",
     "RateOptionalButtonText": "",
     "RateOptionalMessage": "",

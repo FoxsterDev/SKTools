@@ -2,7 +2,7 @@
     "name": "SKTools.Editor.Windows.RateMe",
     "rootNamespace": "",
     "references": [
-        "SKTools.Editor"
+        "SKTools.Editor.Core"
     ],
     "includePlatforms": [
         "Editor"

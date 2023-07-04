@@ -1,7 +1,11 @@
 {
     "name": "SKTools.Editor",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:b207bac1d3c624aee8894b5d5d7ad41b",
+        "GUID:c7c3f00496cfa4837957d303a69a13f4",
+        "GUID:424b154eb2d034b76ab1918ed1f2d868"
+    ],
     "includePlatforms": [
         "Editor"
     ],

@@ -2,7 +2,7 @@
     "name": "SKTools.Editor.Windows.CrashReporter",
     "rootNamespace": "",
     "references": [
-        "SKTools.Editor"
+        "SKTools.Editor.Core"
     ],
     "includePlatforms": [
         "Editor"

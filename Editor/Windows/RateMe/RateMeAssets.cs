@@ -96,11 +96,13 @@ namespace SKTools.Editor.Windows.RateMe
             {
                 if (_starredButtonStyle == null)
                 {
-                    _starredButtonStyle = new GUIStyle();
-                    _starredButtonStyle.fixedHeight = SizeStar;
-                    _starredButtonStyle.fixedWidth = SizeStar;
-                    _starredButtonStyle.stretchHeight = false;
-                    _starredButtonStyle.stretchWidth = false;
+                    _starredButtonStyle = new GUIStyle
+                    {
+                        fixedHeight = SizeStar,
+                        fixedWidth = SizeStar,
+                        stretchHeight = false,
+                        stretchWidth = false
+                    };
 
                     _starredButtonStyle.active.background =
                         _starredButtonStyle.focused.background =

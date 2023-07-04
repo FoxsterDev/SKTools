@@ -16,8 +16,19 @@ namespace SKTools.Editor.Windows.RateMe
             return _instance ?? (_instance = new RateMe());
         }
 
+        public static void Schedule(uint thefirstdisplayinms, uint repeatdisplayinms)
+        {
+            
+        }
+
+        public static void MarkAsUsed()
+        {
+            
+        }
+
         public static void Show(RateMeConfig config)
         {
+            Debug.Log("Show rate me");
             var instance = GetRateMe();
             instance._config = config;
             instance.SetUpWindow(true);

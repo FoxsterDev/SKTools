@@ -1,5 +1,4 @@
-﻿using SKTools.Editor;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SKTools.Editor.Windows.RateMe
 {
