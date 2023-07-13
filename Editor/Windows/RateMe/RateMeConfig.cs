@@ -1,20 +1,31 @@
-﻿using SKTools.Editor;
+﻿using System.Collections.Generic;
+using SKTools.Editor;
 
 namespace SKTools.Editor.Windows.RateMe
 {
     [System.Serializable]
+    public class ListOfRateMeState : EditorJsonAsset
+    {
+        public List<RateMeState> List = new List<RateMeState>();
+        protected override string FileName =>  nameof(ListOfRateMeState);
+    }
+
+    
+    [System.Serializable]
     public class RateMeState : EditorJsonAsset
     {
         public string Source;
-        public bool UserChoiceNeverShowAgain = false;
+        public bool UserSelectedNeverShowAgain = false;
         public long SchedulingTimeUtc = 0;
         public bool Cleared = false;
+        public RateMeConfig Config;
         protected override string FileName => Source + nameof(RateMeState);
     }
     
     [System.Serializable]
     public sealed class RateMeConfig : EditorJsonAsset
     {
+        public string Source;
         public bool SchedulingEnabled = true;
         public uint DisplayInSeconds = 10;
         public uint TryAgainInSeconds = 10;
@@ -31,7 +42,7 @@ namespace SKTools.Editor.Windows.RateMe
 
         public string RateMainUrl = "google.com";
 
-        public string RateMainButtonText = "Rate me on AssetStore";
+        public string RateMainButtonText = "Rate me please";
 
         public string RateOptionalUrl = "";
         public string RateOptionalButtonText = "";

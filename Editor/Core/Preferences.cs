@@ -2,7 +2,7 @@ using UnityEditor;
 
 namespace SKTools.Editor
 {
-    internal class Preferences
+    public class Preferences
     {
         private static Config _root;
         private static Config Root => _root ?? (_root = LoadFromEditorPrefs<Config>());
