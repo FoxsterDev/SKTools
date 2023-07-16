@@ -28,31 +28,32 @@ namespace SKTools.Editor
         protected abstract string FileName { get; }
 
         /// <summary>
-        /// Load from relative folder the asset
+        ///  Load from relative folder the asset
         /// </summary>
-        public void Load(string relativeDirectory)
+        /// <param name="relativeDirectory">file path to local relative folder Editor Resources</param>
+        /// <param name="fileNameJson"> without file extension, will be loaded as file+".json"</param>
+        public bool Load(string relativeDirectory, string fileNameJson = default)
         {
             try
             {
-                var filePath = Path.Combine(relativeDirectory, FileName);
-#if FOXSTER_DEV_MODE
-                Debug.Log(filePath);
-#endif
+                var filePath = Path.Combine(relativeDirectory, fileNameJson != null ? fileNameJson+".json" : FileName+".json");
+                Log.Debug(filePath);
+
                 if (File.Exists(filePath))
                 {
-                    EditorJsonUtility.FromJsonOverwrite(File.ReadAllText(filePath), this);
+                    var text = File.ReadAllText(filePath);
+                    EditorJsonUtility.FromJsonOverwrite(text, this);
+                    return true;
                 }
-                else
-                {
-#if FOXSTER_DEV_MODE
-                    Debug.LogError("!" + filePath);
-#endif
-                }
+                
+                Log.Warning("!" + filePath);
             }
             catch (Exception ex)
             {
-                Debug.LogException(ex);
+                Log.Error(ex);
             }
+
+            return false;
         }
 
         /// <summary>
@@ -67,7 +68,8 @@ namespace SKTools.Editor
                     Directory.CreateDirectory(relativeDirectory);
                 }
 
-                var filePath = Path.Combine(relativeDirectory, FileName);
+                var filePath = Path.Combine(relativeDirectory, FileName+".json");
+                
 #if FOXSTER_DEV_MODE
                 Debug.Log(filePath);
 #endif

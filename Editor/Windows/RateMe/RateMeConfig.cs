@@ -4,12 +4,11 @@ using SKTools.Editor;
 namespace SKTools.Editor.Windows.RateMe
 {
     [System.Serializable]
-    public class ListOfRateMeState : EditorJsonAsset
+    public class ListOfRateMeStates : EditorJsonAsset
     {
         public List<RateMeState> List = new List<RateMeState>();
-        protected override string FileName =>  nameof(ListOfRateMeState);
+        protected override string FileName =>  nameof(ListOfRateMeStates);
     }
-
     
     [System.Serializable]
     public class RateMeState : EditorJsonAsset
@@ -25,14 +24,13 @@ namespace SKTools.Editor.Windows.RateMe
     [System.Serializable]
     public sealed class RateMeConfig : EditorJsonAsset
     {
-        public string Source;
-        public bool SchedulingEnabled = true;
+        public string Source = "";
+        public bool SchedulingEnabled = false;
         public uint DisplayInSeconds = 10;
         public uint TryAgainInSeconds = 10;
 
         public bool ShowOnEditorStartUp = false;
-        //??
-        public int DisplayInUsageCount = -1;
+        public int MaxDisplayCount = -1;
         
         public byte MinStar = 3;
         public byte MaxStar = 5;
@@ -68,7 +66,7 @@ namespace SKTools.Editor.Windows.RateMe
 
         protected override string FileName
         {
-            get { return GetType().Name + ".json"; }
+            get { return GetType().Name; }
         }
     }
 }

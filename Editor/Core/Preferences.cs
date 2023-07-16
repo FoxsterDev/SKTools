@@ -7,6 +7,24 @@ namespace SKTools.Editor
         private static Config _root;
         private static Config Root => _root ?? (_root = LoadFromEditorPrefs<Config>());
 
+        public static string FullRawJson(string key = null)
+        {
+            if (key == null)
+            {
+                var all = EditorPrefs.GetString(typeof(Config).FullName, null);
+                return all;
+            }
+
+            var index = Root.Keys.FindIndex(i => i == key);
+            if (index > -1)
+            {
+                var json = Root.Values[index]; //exception
+                return json;
+            }
+
+            return default;
+        }
+
         public static T Load<T>(string key = null) where T : EditorJsonAsset, new()
         {
             var instance = new T();
@@ -26,7 +44,7 @@ namespace SKTools.Editor
         }
 
 
-        public static void Save<T>(T value, string key = null)
+        public static string Save<T>(T value, string key = null)
         {
             var json = EditorJsonUtility.ToJson((object) value);
             var k = key ?? typeof(T).FullName;
@@ -42,6 +60,7 @@ namespace SKTools.Editor
             }
 
             SaveToEditorPrefs<Config>(_root, null);
+            return json;
         }
 
         public static bool Delete<T>(string key = null) where T : EditorJsonAsset
@@ -59,6 +78,11 @@ namespace SKTools.Editor
             return false;
         }
 
+        public static void DeleteRoot()
+        {
+            UnityEditor.EditorPrefs.DeleteKey(typeof(Config).FullName);
+        }
+        
         private static T LoadFromEditorPrefs<T>(string key = null) where T : EditorJsonAsset, new()
         {
             var json = EditorPrefs.GetString(key ?? typeof(T).FullName, null);

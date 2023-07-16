@@ -10,17 +10,18 @@ namespace SKTools.Editor
     {
         static EntryPoint()
         {
-            Debug.Log("EntryPoint.");
+            Editor.Log.Info("EntryPoint.");
 
             if (!SessionState.GetBool("FirstInitDone", false))
             {
                 SessionState.SetBool("FirstInitDone", true);
                 
-                Debug.Log("First Init.");
-         
                 RateMe.Initialize();
+            }
+            else
+            {
+                RateMe.InitializeDebug();
             }
         }
     }
-    
 }

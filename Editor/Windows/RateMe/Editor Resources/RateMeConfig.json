@@ -1,4 +1,10 @@
 {
+    "Source": "SKTools",
+    "SchedulingEnabled": true,
+    "DisplayInSeconds": 30,
+    "TryAgainInSeconds": 180,
+    "ShowOnEditorStartUp": true,
+    "MaxDisplayCount": 3,
     "MinStar": 4,
     "MaxStar": 5,
     "RequestLabel": "How do you like it?",
